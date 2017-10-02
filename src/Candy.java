@@ -1,6 +1,7 @@
 
-public class Candy {
-	private int type;
-	//private int row, column; ????
+public class Candy { //stores type, colour, image of candy
+	
+	private int type, colour;
+	//Img image?
 	
 }
