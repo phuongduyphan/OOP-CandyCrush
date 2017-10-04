@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_v2aKsKioEeeKgs4tvOnMdQ" name="AcitivityDiagram">
+  <packagedElement xmi:type="uml:Activity" xmi:id="_KaNGwKjbEeeKgs4tvOnMdQ" name="Activity1" node="_YNoaYKjbEeeKgs4tvOnMdQ _bHx3UKjbEeeKgs4tvOnMdQ _gh1sQKjbEeeKgs4tvOnMdQ _ketKcKjbEeeKgs4tvOnMdQ _vLJfAKjbEeeKgs4tvOnMdQ _zeQS8KjbEeeKgs4tvOnMdQ _2XM2AKjbEeeKgs4tvOnMdQ _3cmX0KjbEeeKgs4tvOnMdQ _6heeEKjbEeeKgs4tvOnMdQ _Dq0BIKjcEeeKgs4tvOnMdQ _dzzjQKjcEeeKgs4tvOnMdQ _kZ2DIKjcEeeKgs4tvOnMdQ _pE3yYKjdEeeKgs4tvOnMdQ _vNn5UKjdEeeKgs4tvOnMdQ _3TM5UKjdEeeKgs4tvOnMdQ" group="_M26ZwKjbEeeKgs4tvOnMdQ _PrNtYKjbEeeKgs4tvOnMdQ _Tv5DwKjbEeeKgs4tvOnMdQ _Vx5XwKjbEeeKgs4tvOnMdQ">
+    <edge xmi:type="uml:ControlFlow" xmi:id="_xWopsKjcEeeKgs4tvOnMdQ" target="_bHx3UKjbEeeKgs4tvOnMdQ" source="_YNoaYKjbEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_3YdpQKjcEeeKgs4tvOnMdQ" target="_ketKcKjbEeeKgs4tvOnMdQ" source="_gh1sQKjbEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_7pTMUKjcEeeKgs4tvOnMdQ" target="_vLJfAKjbEeeKgs4tvOnMdQ" source="_ketKcKjbEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_9YEbQKjcEeeKgs4tvOnMdQ" name="Invalid" target="_Dq0BIKjcEeeKgs4tvOnMdQ" source="_vLJfAKjbEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_I83UIKjdEeeKgs4tvOnMdQ" name="Valid" target="_zeQS8KjbEeeKgs4tvOnMdQ" source="_vLJfAKjbEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_L5BjQKjdEeeKgs4tvOnMdQ" target="_6heeEKjbEeeKgs4tvOnMdQ" source="_zeQS8KjbEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_NP6dsKjdEeeKgs4tvOnMdQ" target="_2XM2AKjbEeeKgs4tvOnMdQ" source="_zeQS8KjbEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_OjTYMKjdEeeKgs4tvOnMdQ" target="_3cmX0KjbEeeKgs4tvOnMdQ" source="_zeQS8KjbEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_TSUFAKjdEeeKgs4tvOnMdQ" target="_dzzjQKjcEeeKgs4tvOnMdQ" source="_6heeEKjbEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_U7HO0KjdEeeKgs4tvOnMdQ" name="Stable" target="_kZ2DIKjcEeeKgs4tvOnMdQ" source="_dzzjQKjcEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_bJW5wKjdEeeKgs4tvOnMdQ" name="Unstable" target="_zeQS8KjbEeeKgs4tvOnMdQ" source="_dzzjQKjcEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_1QkTMKjdEeeKgs4tvOnMdQ" target="_vNn5UKjdEeeKgs4tvOnMdQ" source="_pE3yYKjdEeeKgs4tvOnMdQ"/>
+    <edge xmi:type="uml:ControlFlow" xmi:id="_7y_eYKjdEeeKgs4tvOnMdQ" target="_3TM5UKjdEeeKgs4tvOnMdQ" source="_bHx3UKjbEeeKgs4tvOnMdQ"/>
+    <group xmi:type="uml:ActivityPartition" xmi:id="_M26ZwKjbEeeKgs4tvOnMdQ" name="Player" node="_YNoaYKjbEeeKgs4tvOnMdQ _gh1sQKjbEeeKgs4tvOnMdQ"/>
+    <group xmi:type="uml:ActivityPartition" xmi:id="_PrNtYKjbEeeKgs4tvOnMdQ" name="Board" node="_bHx3UKjbEeeKgs4tvOnMdQ _ketKcKjbEeeKgs4tvOnMdQ _vLJfAKjbEeeKgs4tvOnMdQ _zeQS8KjbEeeKgs4tvOnMdQ _2XM2AKjbEeeKgs4tvOnMdQ _6heeEKjbEeeKgs4tvOnMdQ _Dq0BIKjcEeeKgs4tvOnMdQ _dzzjQKjcEeeKgs4tvOnMdQ _kZ2DIKjcEeeKgs4tvOnMdQ _vNn5UKjdEeeKgs4tvOnMdQ"/>
+    <group xmi:type="uml:ActivityPartition" xmi:id="_Tv5DwKjbEeeKgs4tvOnMdQ" name="Drawer" node="_3cmX0KjbEeeKgs4tvOnMdQ"/>
+    <group xmi:type="uml:ActivityPartition" xmi:id="_Vx5XwKjbEeeKgs4tvOnMdQ" name="Timer" node="_pE3yYKjdEeeKgs4tvOnMdQ _3TM5UKjdEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:InitialNode" xmi:id="_YNoaYKjbEeeKgs4tvOnMdQ" name="Start game" outgoing="_xWopsKjcEeeKgs4tvOnMdQ" inPartition="_M26ZwKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_bHx3UKjbEeeKgs4tvOnMdQ" name="Initialize" incoming="_xWopsKjcEeeKgs4tvOnMdQ" outgoing="_7y_eYKjdEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:InitialNode" xmi:id="_gh1sQKjbEeeKgs4tvOnMdQ" name="Input" outgoing="_3YdpQKjcEeeKgs4tvOnMdQ" inPartition="_M26ZwKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_ketKcKjbEeeKgs4tvOnMdQ" name="Count, check and validate input" incoming="_3YdpQKjcEeeKgs4tvOnMdQ" outgoing="_7pTMUKjcEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:DecisionNode" xmi:id="_vLJfAKjbEeeKgs4tvOnMdQ" incoming="_7pTMUKjcEeeKgs4tvOnMdQ" outgoing="_9YEbQKjcEeeKgs4tvOnMdQ _I83UIKjdEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_zeQS8KjbEeeKgs4tvOnMdQ" name="Update Board" incoming="_I83UIKjdEeeKgs4tvOnMdQ _bJW5wKjdEeeKgs4tvOnMdQ" outgoing="_L5BjQKjdEeeKgs4tvOnMdQ _NP6dsKjdEeeKgs4tvOnMdQ _OjTYMKjdEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_2XM2AKjbEeeKgs4tvOnMdQ" name="Update Score" incoming="_NP6dsKjdEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_3cmX0KjbEeeKgs4tvOnMdQ" name="Draw current state" incoming="_OjTYMKjdEeeKgs4tvOnMdQ" inPartition="_Tv5DwKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_6heeEKjbEeeKgs4tvOnMdQ" name="Check for stability" incoming="_L5BjQKjdEeeKgs4tvOnMdQ" outgoing="_TSUFAKjdEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:FlowFinalNode" xmi:id="_Dq0BIKjcEeeKgs4tvOnMdQ" name="EndFlow" incoming="_9YEbQKjcEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:DecisionNode" xmi:id="_dzzjQKjcEeeKgs4tvOnMdQ" incoming="_TSUFAKjdEeeKgs4tvOnMdQ" outgoing="_U7HO0KjdEeeKgs4tvOnMdQ _bJW5wKjdEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:FlowFinalNode" xmi:id="_kZ2DIKjcEeeKgs4tvOnMdQ" name="EndFlow" incoming="_U7HO0KjdEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:InitialNode" xmi:id="_pE3yYKjdEeeKgs4tvOnMdQ" name="Timer ends" outgoing="_1QkTMKjdEeeKgs4tvOnMdQ" inPartition="_Vx5XwKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_vNn5UKjdEeeKgs4tvOnMdQ" name="End Game" incoming="_1QkTMKjdEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:OpaqueAction" xmi:id="_3TM5UKjdEeeKgs4tvOnMdQ" name="Start timer" incoming="_7y_eYKjdEeeKgs4tvOnMdQ" inPartition="_Vx5XwKjbEeeKgs4tvOnMdQ"/>
+  </packagedElement>
+</uml:Model>
