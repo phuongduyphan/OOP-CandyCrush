@@ -1,4 +1,8 @@
 
+/**
+ * INSERT DESCRIPTION FOR PUBLIC METHOD HERE
+ *
+ */
 public class Board {
 	static private int numberOfRow = 5, numberOfColumn = 5;
 	static private int cellHeight = 10, cellWidth = 10;
@@ -47,11 +51,7 @@ public class Board {
 	private boolean checkBoard(int row, int column) {
 		
 	}
-	
-	private boolean checkSelected() {
 		
-	}
-	
 	private boolean resetScore() {
 	
 	}

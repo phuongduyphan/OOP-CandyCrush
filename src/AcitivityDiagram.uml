@@ -14,13 +14,13 @@
     <edge xmi:type="uml:ControlFlow" xmi:id="_bJW5wKjdEeeKgs4tvOnMdQ" name="Unstable" target="_zeQS8KjbEeeKgs4tvOnMdQ" source="_dzzjQKjcEeeKgs4tvOnMdQ"/>
     <edge xmi:type="uml:ControlFlow" xmi:id="_1QkTMKjdEeeKgs4tvOnMdQ" target="_vNn5UKjdEeeKgs4tvOnMdQ" source="_pE3yYKjdEeeKgs4tvOnMdQ"/>
     <edge xmi:type="uml:ControlFlow" xmi:id="_7y_eYKjdEeeKgs4tvOnMdQ" target="_3TM5UKjdEeeKgs4tvOnMdQ" source="_bHx3UKjbEeeKgs4tvOnMdQ"/>
-    <group xmi:type="uml:ActivityPartition" xmi:id="_M26ZwKjbEeeKgs4tvOnMdQ" name="Player" node="_YNoaYKjbEeeKgs4tvOnMdQ _gh1sQKjbEeeKgs4tvOnMdQ"/>
+    <group xmi:type="uml:ActivityPartition" xmi:id="_M26ZwKjbEeeKgs4tvOnMdQ" name="Player"/>
     <group xmi:type="uml:ActivityPartition" xmi:id="_PrNtYKjbEeeKgs4tvOnMdQ" name="Board" node="_bHx3UKjbEeeKgs4tvOnMdQ _ketKcKjbEeeKgs4tvOnMdQ _vLJfAKjbEeeKgs4tvOnMdQ _zeQS8KjbEeeKgs4tvOnMdQ _2XM2AKjbEeeKgs4tvOnMdQ _6heeEKjbEeeKgs4tvOnMdQ _Dq0BIKjcEeeKgs4tvOnMdQ _dzzjQKjcEeeKgs4tvOnMdQ _kZ2DIKjcEeeKgs4tvOnMdQ _vNn5UKjdEeeKgs4tvOnMdQ"/>
-    <group xmi:type="uml:ActivityPartition" xmi:id="_Tv5DwKjbEeeKgs4tvOnMdQ" name="Drawer" node="_3cmX0KjbEeeKgs4tvOnMdQ"/>
+    <group xmi:type="uml:ActivityPartition" xmi:id="_Tv5DwKjbEeeKgs4tvOnMdQ" name="GUI" node="_3cmX0KjbEeeKgs4tvOnMdQ"/>
     <group xmi:type="uml:ActivityPartition" xmi:id="_Vx5XwKjbEeeKgs4tvOnMdQ" name="Timer" node="_pE3yYKjdEeeKgs4tvOnMdQ _3TM5UKjdEeeKgs4tvOnMdQ"/>
-    <node xmi:type="uml:InitialNode" xmi:id="_YNoaYKjbEeeKgs4tvOnMdQ" name="Start game" outgoing="_xWopsKjcEeeKgs4tvOnMdQ" inPartition="_M26ZwKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:InitialNode" xmi:id="_YNoaYKjbEeeKgs4tvOnMdQ" name="Start game" outgoing="_xWopsKjcEeeKgs4tvOnMdQ"/>
     <node xmi:type="uml:OpaqueAction" xmi:id="_bHx3UKjbEeeKgs4tvOnMdQ" name="Initialize" incoming="_xWopsKjcEeeKgs4tvOnMdQ" outgoing="_7y_eYKjdEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
-    <node xmi:type="uml:InitialNode" xmi:id="_gh1sQKjbEeeKgs4tvOnMdQ" name="Input" outgoing="_3YdpQKjcEeeKgs4tvOnMdQ" inPartition="_M26ZwKjbEeeKgs4tvOnMdQ"/>
+    <node xmi:type="uml:InitialNode" xmi:id="_gh1sQKjbEeeKgs4tvOnMdQ" name="Input" outgoing="_3YdpQKjcEeeKgs4tvOnMdQ"/>
     <node xmi:type="uml:OpaqueAction" xmi:id="_ketKcKjbEeeKgs4tvOnMdQ" name="Count, check and validate input" incoming="_3YdpQKjcEeeKgs4tvOnMdQ" outgoing="_7pTMUKjcEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
     <node xmi:type="uml:DecisionNode" xmi:id="_vLJfAKjbEeeKgs4tvOnMdQ" incoming="_7pTMUKjcEeeKgs4tvOnMdQ" outgoing="_9YEbQKjcEeeKgs4tvOnMdQ _I83UIKjdEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
     <node xmi:type="uml:OpaqueAction" xmi:id="_zeQS8KjbEeeKgs4tvOnMdQ" name="Update Board" incoming="_I83UIKjdEeeKgs4tvOnMdQ _bJW5wKjdEeeKgs4tvOnMdQ" outgoing="_L5BjQKjdEeeKgs4tvOnMdQ _NP6dsKjdEeeKgs4tvOnMdQ _OjTYMKjdEeeKgs4tvOnMdQ" inPartition="_PrNtYKjbEeeKgs4tvOnMdQ"/>
