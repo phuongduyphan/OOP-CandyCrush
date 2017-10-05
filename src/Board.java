@@ -1,12 +1,14 @@
-import java.util.Random;
 
 public class Board {
 	static private int numberOfRow = 5, numberOfColumn = 5;
 	static private int cellHeight = 10, cellWidth = 10;
+	private Drawer drawer;
+	private CellSelectionHandler cellSelectionHandler;
 	private Candy grid[][];
 	
 	public Board() {
 		grid = new Candy[numberOfRow][numberOfColumn];
+		drawer = new Drawer();
 	}
 	
 	public boolean initialize() {
@@ -69,16 +71,5 @@ public class Board {
 	private boolean swapCandy() {
 		
 	}
-	
-	private Candy getRandCandy() {
-		if(Candy.getNumberOfColour() == 0 || Candy.getNumberOfType() == 0) {
-			System.err.println("ERROR MESSAGE HERE");
-			return null;
-		}
-		Random rand = new Random();
-		Candy candy = new Candy(rand.nextInt(Candy.getNumberOfType()), rand.nextInt(Candy.getNumberOfColour()));
-		return candy;
-	}
-
 	
 }

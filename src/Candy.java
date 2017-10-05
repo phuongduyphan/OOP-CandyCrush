@@ -1,4 +1,10 @@
+import java.util.Random;
 
+/**
+ * @getRandCandy()
+ * Return a random generated Candy object.
+ *
+ */
 public class Candy { //stores type, colour, image of candy
 	static private int numberOfType = 0;
 	static private int numberOfColour = 0;
@@ -16,6 +22,16 @@ public class Candy { //stores type, colour, image of candy
 
 	public static void setNumberOfType(int numberOfType) {
 		Candy.numberOfType = numberOfType;
+	}
+	
+	public static Candy getRandCandy() {
+		if(Candy.getNumberOfColour() == 0 || Candy.getNumberOfType() == 0) {
+			System.err.println("ERROR MESSAGE HERE");
+			return null;
+		}
+		Random rand = new Random();
+		Candy candy = new Candy(rand.nextInt(Candy.getNumberOfType()), rand.nextInt(Candy.getNumberOfColour()));
+		return candy;
 	}
 
 	public int getType() {
