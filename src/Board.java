@@ -55,7 +55,7 @@ public class Board {
 	//private boolean swapBack = false;
 	
 	public Board() {
-		grid = new Candy[numberOfRow][numberOfColumn];
+		grid = new Candy[NUM_OF_ROWS][NUM_OF_COLS];
 		drawer = new Drawer();
 		comboList = new ArrayList<Coordinate>();
 	}
