@@ -1,3 +1,5 @@
+import entity.Candy;
+
 public class Cell
 {
 	private Candy element; //stores information of candy

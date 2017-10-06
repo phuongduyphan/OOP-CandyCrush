@@ -1,5 +1,12 @@
+package entity;
+
 import java.util.ArrayList;
 import java.util.Random;
+
+import entity.Candy;
+import tools.Coordinate;
+import tools.Drawer;
+
 
 /**
  * @initialize
@@ -26,31 +33,35 @@ import java.util.Random;
  * Exchange the coordinates of two candies
  * Call drawer.swap(candy1, candy2)
  * 
- * @crushCandies(ArrayList<Coordinate> combolist)
+ * @crushCandies(ArrayList<Coordinate> comboList)
  * Set null(?) values to candies with coordinates from comboList
- * Call drawer.crush(ArrayList<Coordinate> combolist)
+ * Call drawer.crush(comboList)
  * 
  * @moveCandies
- * Append coordinates to oldCoorList, newCoorList and blankList
- * 		- oldCoorList & newCoorList store positions before and after the move
- * 		- blankList	positions of unoccupied cells after the move
- * Set new coordinates for the candies and null values for blank cells
- * Call drawer.move(ArrayList<Coordinate> oldCoorList, ArrayList<Coordinate> newCoorList)
+ * oldCoorList & newCoorList store positions before and after the move
+ * blankList stores positions of unoccupied cells after the move
  * 
- * @newFall(ArrayList<Coordinate> blankList, ArrayList<Candies> newCandyList)
+ * Append coordinates to oldCoorList, newCoorList and blankList
+ * Set new coordinates for the candies and null values for blank cells
+ * Call drawer.move(oldCoorList, newCoorList)
+ * 
+ * @newFall(ArrayList<Coordinate> blankList)
  * fallColList stores coordinates for the fall of ONE column
  * newCandyList stores randomly generated candies to fill cells with coor in fallColList
+ * ORDER: FROM BOTTOM TO TOP
  * 
  * Update fallColList with coordinates with same column from blankList
  * Append newCandyList with candies returned from getRandCandy()
+ * Call drawer.newFall(fallColList, newCandyList)
  * 				
  */
+
 public class Board {
 	static private int NUM_OF_ROWS = 5, NUM_OF_COLS = 5;
 	static private int CELL_HEIGHT = 10, CELL_WIDTH = 10;
 	private ArrayList<Coordinate> comboList, oldCoorList, newCoorList, blankList, fallColList;
 	private Drawer drawer;
-	private CellSelectionHandler cellSelectionHandler;
+	//private CellSelectionHandler cellSelectionHandler;
 	private Candy grid[][];
 	//private boolean swapBack = false;
 	
@@ -80,7 +91,7 @@ public class Board {
 	}
 	
 	public boolean isStable() {
-		comboList.clean();
+		comboList.clear();
 		//TODO
 		//check for stability and modify comboList if necessary
 		
@@ -111,19 +122,33 @@ public class Board {
 	
 	public void swapCandies(Coordinate candy1, Coordinate candy2) {
 		//TODO
+		//update board
+		
+		drawer.swap(candy1, candy2);
 		
 	}
 	
 	public void crushCandies(ArrayList<Coordinate> comboList) {
 		//TODO
+		//update board
+		
+		drawer.crush(comboList);
+		
 	}
 	
 	public void moveCandies() {
 		//TODO
+		//update board
+		
+		drawer.move(oldCoorList, newCoorList);
 	}
 	
 	public void newFall() {
 		//TODO
+		//update board
+		
+		drawer.move(oldCoorList, newCoorList);
+		
 	}
 	
 	public void updateBoard() {
@@ -131,8 +156,8 @@ public class Board {
 	}
 	
 	public void fillGrid() {
-		for (i = 0; i < NUM_OF_ROWS; i++)
-			for (j = 0; j < NUM_OF_COLS; j++)
+		for (int i = 0; i < NUM_OF_ROWS; i++)
+			for (int j = 0; j < NUM_OF_COLS; j++)
 				grid[i][j] = getRandCandy();
 	}
 	
