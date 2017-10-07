@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class BoardExample extends Application {
+	private Drawer drawer =  new Drawer();
 	
 	//var board setup
 	private static final int WIDTH= 40;
@@ -146,9 +147,9 @@ public class BoardExample extends Application {
 	Pane root = new Pane();
 	Rectangle rectArray[][]= new Rectangle[numberOfColumn][numberOfRow];
 	@Override
-	public void start (Stage board) {
+	public void start (Stage stage) {
 		
-		
+		x	
 	// init the board
 		
 		for (int column = 0, x=1; column < numberOfColumn; column++,x+=WIDTH+1) {
@@ -190,7 +191,7 @@ public class BoardExample extends Application {
         imageView.setFitHeight(60);
         imageView.setFitWidth(120);
        
-        
+        grid.add
         grid.add(imageView,4,0,1,4); //must have ImageView como a node
         grid.add(playerTitle,0,0,2,1); 
         grid.add(playername, 2, 0);

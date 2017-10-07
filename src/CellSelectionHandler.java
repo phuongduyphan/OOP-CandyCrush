@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * A class which handle user's cells' selection.
+ * A class which handles user's cells' selection.
  * 
  * @getSelected()
  * Return current selected cell as a Coordinate object.
@@ -11,8 +11,8 @@ import java.util.ArrayList;
  * @select(int row, int col)
  * Perform a selection action.
  *  	If no cell is currently selected, select the given one.
- *  	If the given cell is adjacent two the previous selected cells, return the two coordinates and reset.
- *  	If the given cell is not adjacent or is the same with the previous selected cell reset.
+ *  	If the given cell is adjacent to the previous selected cells, return the two coordinates and reset.
+ *  	If the given cell is not adjacent or is the same with the previous selected cell, reset.
  * Return a null object if this is the first cell.
  * Return a ArrayList<Coordinate> object contains two Coordinate objects if two adjacent cells are selected.
  * Return a null object if the given cell is not adjacent or is the same with the previous selected cell.
