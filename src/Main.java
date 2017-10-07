@@ -13,17 +13,9 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 	// Windows Attributes
-	private static final String screenTitle = "Candy Crush";
-	private static final int screenWidth = 320;
-	private static final int screenHight = 400;
-	private static final String logoDirectory = "File:images/Candy Crush.jpg";
 
 	// Gameplay Attributes
 	private static final int time = 10; //in second
-	private static final int cellWidth = 40;
-	private static final int cellHight = 40;
-	private static final int numberOfColumn = 7;
-	private static final int numberOfRow = 7;
 
 	private static Stage stage;
 	private static Scene scene;

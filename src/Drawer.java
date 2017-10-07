@@ -17,53 +17,52 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.Pair;
 
 /**
  * INSERT DESCRIPTION FOR PUBLIC METHOD HERE
  *
  */
 public class Drawer {
-	public Scene scene;
+	
+
+	private static final int cellWidth = 40;
+	private static final int cellHeight = 40;
+	private static final int numberOfColumn = 7;
+	private static final int numberOfRow = 7;
+	
+	Pane GameBoard = new Pane();
+	
 	public Drawer() {
 		
 	}
 	
-	public boolean swap(Coordinate coor1, Coordinate coor2) {
-		ArrayList<Coordinate> oldCoor = new ArrayList<Coordinate>();
-		ArrayList<Coordinate> newCoor = new ArrayList<Coordinate>();
-		oldCoor.add(coor1);
-		oldCoor.add(coor2);
-		newCoor.add(coor2);
-		newCoor.add(coor1);
-		return move(oldCoor, newCoor);
+	public void newFall(ArrayList<Coordinate> coorList, ArrayList<Integer> typeList) { // doi mau tu 0 thanh type
 		
 	}
 	
-	public boolean swap(ArrayList<Coordinate> oldCoorList, ArrayList<Coordinate> newCoorList) {
-		return move(oldCoorList, newCoorList);
+	public void swap(Coordinate coor1, Coordinate coor2) {
+		
 	}
 	
-	public boolean crush(ArrayList<Coordinate> coorList) {
-		//TODO
-		//draw exploding animation at given coors
-		//at the end the given coors are blank
+	public void crush(Coordinate coor) { //doi mau ve 0
+		
 	}
 	
-	public boolean move(ArrayList<Coordinate> oldCoorList, ArrayList<Coordinate> newCoorList) {
-		//TODO
-		//move from old coor to new coor
+	public void move(ArrayList<Pair<Coordinate, Coordinate>> coorList ) {
+		
 	}
 	
-	public boolean newFall(ArrayList<Coordinate> newCoorList, ArrayList<Candy> candyList) {
-	//Candies in list must be in the same col
-	//Order in list must be from bottom to top
-	}
+	private void swapColor()
 	
-	/*public boolean select(Coordinate coordinate) {
-		//highlight given cell and adjacent cell
+	private Coordinate transPixel(Coordinate coordinate) {
+		// ROW ~ Y
+		// COLUMN ~ X
+		int x = coordinate.getColumn().intValue();
+		int y = coordinate.getRow().intValue();
+		
+		x = x * cellWidth;
+		y = y * cellHeight;		
+		return coordinate = new Coordinate(y ,x);
 	}
-	
-	public boolean deselect(Coordinate coordinate) {
-		//deselect all current selected cell
-	}*/
 }
