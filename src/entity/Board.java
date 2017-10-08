@@ -44,6 +44,7 @@ public class Board {
 	private static int CELL_HEIGHT = 10, CELL_WIDTH = 10; //TODO FIXED SIZE?
 	private static ArrayList<Coordinate> comboList, oldCoorList, newCoorList, blankList, fallColList;
 	private static ArrayList<Integer> newCandyList;
+	private static int score;
 	private Coordinate candy1, candy2;
 	private Drawer drawer;
 	private static Integer grid[][];
@@ -92,6 +93,13 @@ public class Board {
 		return comboList;
 	}
 	
+	public static void updateScore() {
+		score += comboList.size() * 100;
+		
+		headerBoardController(toString(score)); //????
+		
+	}
+	
 	public static void swap(Coordinate candy1, Coordinate candy2) {
 		//TODO
 		Integer temp;
@@ -110,6 +118,7 @@ public class Board {
 		
 		return !(checkSequenceCandy().size() == 0);
 	}
+	
 
 	public void crushCandies(ArrayList<Coordinate> comboList) {
 		//TODO
@@ -154,6 +163,7 @@ public class Board {
 		if (swapCandies(candy1, candy2)) {
 			do {
 				crushCandies(comboList);
+				updateScore();
 				moveCandies();
 				newFall(blankList);
 			} while (checkSequenceCandy().size() > 0) ;  
