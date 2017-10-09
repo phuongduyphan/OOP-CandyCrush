@@ -1,11 +1,14 @@
 import java.util.ArrayList;
 import java.util.Random;
-
+import javafx.animation.Interpolator;
+import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 /**
@@ -64,7 +67,8 @@ public class GameBoard {
 
 	public void newFall(ArrayList<Coordinate> coorList, ArrayList<Integer> typeList) { // doi mau tu 0 thanh type
 		for(int i = 0; i < coorList.size(); ++i) {
-			imgGrid.get(toIdex(coorList.get(i))).setImage(new Image(imageDirectory[typeList.get(i)]));
+			//imgGrid.get(toIdex(coorList.get(i))).setImage(new Image(imageDirectory[typeList.get(i)]));
+			flip(imgGrid.get(i),imgList.get(typeList.get(i)));
 		}
 	}
 
@@ -77,7 +81,8 @@ public class GameBoard {
 	}
 
 	public void crush(Coordinate coor) { // doi mau ve 0
-		imgGrid.get(toIdex(coor)).setImage(emptyCell);
+		//imgGrid.get(toIdex(coor)).setImage(emptyCell);
+		flip(imgGrid.get(toIdex(coor)),emptyCell);
 	}
 
 	public void move(ArrayList<Pair<Coordinate, Coordinate>> coorList) {
@@ -94,6 +99,26 @@ public class GameBoard {
 
 		return row * numberOfColumn + col;
 	}
+	
+	private void flip(ImageView imgView, Image img) {
+		ScaleTransition hideFront = new ScaleTransition(Duration.millis(50), imgView);
+		hideFront.setFromX(1);
+		hideFront.setToX(0);
+		hideFront.setInterpolator(Interpolator.EASE_IN);
+		
+		hideFront.setOnFinished(e -> {
+			imgView.setImage(img);
+		});
+		
+		ScaleTransition showBack = new ScaleTransition(Duration.millis(50), imgView);
+		showBack.setFromX(0);
+		showBack.setToX(1);
+		showBack.setInterpolator(Interpolator.EASE_OUT);
+		
+		SequentialTransition sequence = new SequentialTransition(hideFront, showBack);
+		sequence.play();
+		
+	}
 
 	public GridPane getGameBoardPane() {
 		return gameBoardPane;
@@ -101,7 +126,8 @@ public class GameBoard {
 	
 	public void getERekt() {
 		for(ImageView img : imgGrid) {
-			img.setImage(imgList.get(random.nextInt(imgList.size())));
+			flip(img,imgList.get(random.nextInt(imgList.size())));
+			//img.setImage(imgList.get(random.nextInt(imgList.size())));			
 		}
 	}
 }
