@@ -99,7 +99,6 @@ public class Board {
 		grid[candy1.getKey()][candy1.getValue()]
 									= grid[candy2.getKey()][candy2.getValue()];
 		grid[candy2.getKey()][candy2.getValue()] = temp;
-		
 	}
 
 	public static boolean swapCandies(Coordinate candy1, Coordinate candy2) {
