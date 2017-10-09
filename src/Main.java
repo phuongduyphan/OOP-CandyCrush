@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -13,13 +14,14 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 	// Windows Attributes
-
+	String screenTitle = "Candy Crush";
 	// Gameplay Attributes
-	private static final int time = 10; //in second
+	private static final int time = 100; //in second
 
 	private static Stage stage;
 	private static Scene scene;
-	private static Pane headerPane, gameBoardPane;
+	private static GameBoard gameBoard;
+	private static Pane headerPane;
 	private static HeaderBoardController headerBoardController;
 	private static FXMLLoader headerBoardLoader; 
 	
@@ -32,15 +34,17 @@ public class Main extends Application {
 		// Set up Header Board and its controller
 		headerBoardLoader = new FXMLLoader(getClass().getResource("HeaderBoard.fxml"));
 		headerPane = headerBoardLoader.load();
-		gameBoardPane = new Pane();
 		headerBoardController = headerBoardLoader.getController();
+		
+		//Set up Game Board
+		gameBoard = new GameBoard();
 		
 		// Set up timer
 		TimeHandler.setTime(time);
 		
 		// Wrap up and display
-		StackPane root = new StackPane();
-		root.getChildren().addAll(headerPane, gameBoardPane);
+		VBox root = new VBox();
+		root.getChildren().addAll(headerPane, gameBoard.getGameBoardPane());
 		stage = _stage;
 		stage.setTitle(screenTitle);
 		stage.setResizable(false);
@@ -52,6 +56,7 @@ public class Main extends Application {
 	// To be executed every time the Time Handler updates
 	public static void timerAction() {
 		headerBoardController.setTimeValue(TimeHandler.getTimeLeft());
+		gameBoard.getERekt();
 	}
 	
 	// To be executed when the Time Handler runs out
