@@ -16,7 +16,7 @@ public class Main extends Application {
 	// Windows Attributes
 	String screenTitle = "Candy Crush";
 	// Gameplay Attributes
-	private static final int time = 100; //in second
+	private static final int time = 10; //in second
 
 	private static Stage stage;
 	private static Scene scene;

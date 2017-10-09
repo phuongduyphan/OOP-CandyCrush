@@ -13,16 +13,11 @@ import javafx.util.Pair;
  *
  */
 public class GameBoard {
+	// Editable properties
 	private static final int windowWidth = 320;
 	private static final int numberOfColumn = 10;
 	private static final int numberOfRow = 10;
-
-	private static final int cellWidth = windowWidth / numberOfColumn;
-	private static final int cellHeight = cellWidth;
-	private static final int windowHeight = numberOfRow * cellHeight;
-	private static Random random = new Random();
-
-	private static final String emptyCell = "Images/0.png";
+	private static final String emptyCellDirectory = "Images/0.png";
 	private static final String[] imageDirectory = new String[] { 	"Images/red.png",
 																	"Images/blue.png",
 																	"Images/yellow.png",
@@ -35,21 +30,33 @@ public class GameBoard {
 																	"Images/Quang.JPG",
 																	"Images/red.jpg"};
 
+	// Automatic properties
+	private static final int cellWidth = windowWidth / numberOfColumn;
+	//private static final int cellHeight = cellWidth;
+	//	private static final int windowHeight = numberOfRow * cellHeight;
+	private static Random random = new Random();
 	private static GridPane gameBoardPane;
 	private static FXMLLoader gameBoardLoader;
-	private static ArrayList<ImageView> imgList = new ArrayList<ImageView>();
+	private static ArrayList<ImageView> imgGrid = new ArrayList<ImageView>();
+	private static ArrayList<Image> imgList = new ArrayList<Image>();
+	private static Image emptyCell = new Image(emptyCellDirectory);
 	// private static GameBoardController gameBoardController;
 
 	public GameBoard() throws Exception {
+		// Load FXML
 		gameBoardLoader = new FXMLLoader(getClass().getResource("GameBoard.fxml"));
 		gameBoardPane = gameBoardLoader.load();
 
+		// Load images
+		for (int i = 0; i < imageDirectory.length; ++i) imgList.add(new Image(imageDirectory[i]));
+		
+		//Generate board
 		for (int i = 0; i < numberOfColumn; ++i) {
 			for (int j = 0; j < numberOfRow; ++j) {
-				imgList.add(new ImageView(imageDirectory[random.nextInt(imageDirectory.length)]));
-				imgList.get(imgList.size()-1).setFitWidth(cellWidth);
-				imgList.get(imgList.size()-1).setPreserveRatio(true);
-				gameBoardPane.add(imgList.get(imgList.size()-1), i, j);
+				imgGrid.add(new ImageView(imgList.get(random.nextInt(imgList.size()))));
+				imgGrid.get(imgGrid.size()-1).setFitWidth(cellWidth);
+				imgGrid.get(imgGrid.size()-1).setPreserveRatio(true);
+				gameBoardPane.add(imgGrid.get(imgGrid.size()-1), i, j);
 			}
 			gameBoardPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
 		}
@@ -57,20 +64,20 @@ public class GameBoard {
 
 	public void newFall(ArrayList<Coordinate> coorList, ArrayList<Integer> typeList) { // doi mau tu 0 thanh type
 		for(int i = 0; i < coorList.size(); ++i) {
-			imgList.get(toIdex(coorList.get(i))).setImage(new Image(imageDirectory[typeList.get(i)]));
+			imgGrid.get(toIdex(coorList.get(i))).setImage(new Image(imageDirectory[typeList.get(i)]));
 		}
 	}
 
 	public void swap(Coordinate coor1, Coordinate coor2) {
-		Image i1 = imgList.get(toIdex(coor1)).getImage();
-		Image i2 = imgList.get(toIdex(coor2)).getImage();
+		Image i1 = imgGrid.get(toIdex(coor1)).getImage();
+		Image i2 = imgGrid.get(toIdex(coor2)).getImage();
 		
-		imgList.get(toIdex(coor1)).setImage(i2);
-		imgList.get(toIdex(coor2)).setImage(i1);
+		imgGrid.get(toIdex(coor1)).setImage(i2);
+		imgGrid.get(toIdex(coor2)).setImage(i1);
 	}
 
 	public void crush(Coordinate coor) { // doi mau ve 0
-		imgList.get(toIdex(coor)).setImage(new Image(emptyCell));
+		imgGrid.get(toIdex(coor)).setImage(emptyCell);
 	}
 
 	public void move(ArrayList<Pair<Coordinate, Coordinate>> coorList) {
@@ -93,8 +100,8 @@ public class GameBoard {
 	}
 	
 	public void getERekt() {
-		for(ImageView img : imgList) {
-			img.setImage(new Image(imageDirectory[random.nextInt(imageDirectory.length)]));
+		for(ImageView img : imgGrid) {
+			img.setImage(imgList.get(random.nextInt(imgList.size())));
 		}
 	}
 }
