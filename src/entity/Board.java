@@ -9,42 +9,48 @@ import tools.Drawer;
 
 /**
  * @initialize()
+ * PUBLIC
  * Initialize the game field: 
  * Fill, validate and show grid
+ * 
+ * @generateBoard()
+ * Fill board with randomly-generated values
  * 
  * @isValid()
  * Check for at least one possible combo, 
  * i.e player can make at least one more move.
  * 		
  * @checkSequenceCandy()
- * Check for uncrushed combos on the screen. 
+ * Check for sequence of candies on the screen and modify comboList if necessary.
  * Return comboList
  * 
+ * @haveCombo()
+ * Return checkSequenceCandy().size() > 0
+ * 
  * @swapCandies(Coordinate candy1, Coordinate candy2)
+ * PUBLIC
  * Exchange the coordinates of two candies.
  * Check the swap: if not generate combo, swap back
  * 
- * @crushCandies(ArrayList<Coordinate> comboList)
- * Set null(?) values to candies with coordinates from comboList. 
- * 
- * @moveCandies()
- * Move candies downwards to fill the empty cells after crushing.
- * Update the positions of candies.
- *  
- * @newFall(ArrayList<Coordinate> blankList)
- * Fill the unoccupied cells with randomly-generated candies. 
+ * @crushCandies()
+ * Set 0 to candies with coordinates from comboList.  
  * 
  * @updateBoard()
+ * PUBLIC
  * Update the board after each valid swap until stability is attained.
  * 
+ * @updateScore()
+ * PUBLIC
+ * Update score based on number of crushed candies
  */
 
 public class Board {
-	private static int NUM_OF_ROWS = 5, NUM_OF_COLS = 5; //TODO FIXED SIZE?
+	private static int NUM_OF_ROWS = 10, NUM_OF_COLS = 10; //TODO FIXED SIZE?
 	private static int CELL_HEIGHT = 10, CELL_WIDTH = 10; //TODO FIXED SIZE?
-	private static ArrayList<Coordinate> comboList, oldCoorList, newCoorList, blankList, fallColList;
-	private static ArrayList<Integer> newCandyList;
-	private Coordinate candy1, candy2;
+	private static int CANDY_TYPE;
+	private static ArrayList<Coordinate> comboList;
+	private static Integer score;
+	private static Coordinate candy1, candy2;
 	private Drawer drawer;
 	private static Integer grid[][];
 	
@@ -52,35 +58,32 @@ public class Board {
 		grid = new Integer[NUM_OF_ROWS][NUM_OF_COLS];
 		drawer = new Drawer();
 		comboList = new ArrayList<Coordinate>();
-		oldCoorList = new ArrayList<Coordinate>();
-		newCoorList = new ArrayList<Coordinate>();
-		blankList = new ArrayList<Coordinate>();
-		fallColList = new ArrayList<Coordinate>();
 	}
 	
-	/*public void initialize() {
-		fillGrid();
+	public static void initialize() {
+		generateBoard();
 		
-		 while (!isValid() || !isStable())
-			generateBoard(); //or fill new grid?
+		//generate until board is valid and has combo
+		while (!isValid() || !haveCombo())
+			generateBoard();
 		 
 		drawer.drawBoard();
-	}*/
+	}
 	
-	public static ArrayList<Coordinate> checkSequenceCandy() {
+	private static void generateBoard() {
+		for (int i = 0; i < NUM_OF_ROWS; i++) {
+			for (int j = 0; j < NUM_OF_COLS; j++) {
+				grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+			}
+		}
+	}
+	
+	private static ArrayList<Coordinate> checkSequenceCandy() {
 		comboList.clear(); //Reset comboList.
 		
-		for (int i = 0; i < NUM_OF_ROWS - 2; i++) {
+		//CHECK ROW
+		for (int i = 0; i < NUM_OF_ROWS; i++) {
 			for (int j = 0; j < NUM_OF_COLS - 2; j++) {
-				
-				//CHECK COLUMN
-				if ( (grid[i][j] == grid[i+ 1][j]) && (grid[i][j] == grid[i+2][j]) ) {
-					comboList.add(new Coordinate(i, j));
-					comboList.add(new Coordinate(i + 1, j));
-					comboList.add(new Coordinate(i + 2, j));
-				}
-				
-				//CHECK ROW
 				if ( (grid[i][j] == grid[i][j + 1]) && (grid[i][j] == grid[i][j + 2]) ) {
 					comboList.add(new Coordinate(i, j));
 					comboList.add(new Coordinate(i, j + 1));
@@ -89,77 +92,69 @@ public class Board {
 			}
 		}
 		
+		//CHECK COLUMN
+		for (int i = 0; i < NUM_OF_ROWS - 2; i++) {
+			for (int j = 0; j < NUM_OF_COLS; j++) {
+				if ( (grid[i][j] == grid[i+ 1][j]) && (grid[i][j] == grid[i+2][j]) ) {
+					comboList.add(new Coordinate(i, j));
+					comboList.add(new Coordinate(i + 1, j));
+					comboList.add(new Coordinate(i + 2, j));
+				}
+			}
+		}
+		
 		return comboList;
 	}
 	
-	public static void swap(Coordinate candy1, Coordinate candy2) {
-		//TODO
-		Integer temp;
-		temp = grid[candy1.getKey()][candy1.getValue()];
-		grid[candy1.getKey()][candy1.getValue()]
-									= grid[candy2.getKey()][candy2.getValue()];
-		grid[candy2.getKey()][candy2.getValue()] = temp;
+	private static boolean haveCombo() {
+		return (checkSequenceCandy().size() > 0);
+	}
+	
+	public static void updateScore() {
+		score += comboList.size() * 100;
+		
+		//headerBoardController(Integer.toString(score)); ????
+		
+	}
+	
+	//swap PERFORMS SWAP ACTIONS
+	//AND CAN BE REUSED IN ANY METHODS OTHER THAN swapCandies
+	private static void swap(Coordinate candy1, Coordinate candy2) {
+		Integer temp, xCandy1, yCandy1, xCandy2, yCandy2;
+		xCandy1 = candy1.getKey(); yCandy1 = candy1.getValue();
+		xCandy2 = candy1.getKey(); yCandy2 = candy2.getValue();
+		
+		temp = grid[xCandy1][yCandy1];
+		grid[xCandy1][yCandy1] = grid[xCandy2][yCandy2];
+		grid[xCandy2][yCandy2] = temp;
 	}
 
 	public static boolean swapCandies(Coordinate candy1, Coordinate candy2) {
 		
 		swap(candy1, candy2);
-		if (checkSequenceCandy().size() == 0)
-			swap(candy1, candy2);
+		drawer.swap(candy1, candy2);
 		
-		return !(checkSequenceCandy().size() == 0);
+		if (haveCombo()) { //if move doesn't generate combo, swap back
+			swap(candy1, candy2);
+			drawer.swap(candy1, candy2);
+		}
+		
+		return haveCombo();
 	}
+	
 
-	public void crushCandies(ArrayList<Coordinate> comboList) {
-		//TODO
-		//update board
+	private static void crushCandies() {
+		for (Coordinate x : comboList)
+			grid[x.getKey()][x.getValue()] = 0;		
 		
 		drawer.crush(comboList);
-		
 	}
 	
-	public void moveCandies() {
-		/* PARAMETERS:
-			 * oldCoorList & newCoorList store positions before and after the move. 
-			 * blankList stores positions of unoccupied cells after the move. 
-		 
-		 * TODO
-			 * Append coordinates to oldCoorList, newCoorList and blankList. 
-			 * Set new coordinates for the candies and null values for blank cells.
-		 */
-		
-		drawer.move(oldCoorList, newCoorList);
+	public static void updateBoard() {
+		do {
+			crushCandies();
+			dropNewCandy();
+		} while (haveCombo()) ;  
 	}
-	
-	public void newFall(ArrayList<Coordinate> blankList) {
-		/* PARAMETERS:
-			 * blankList stores positions of unoccupied cells after the move.
-			 * 
-			 * fallColList stores coordinates for the fall of ONE column. 
-			 * newCandyList stores randomly generated candies to fill cells with coors in fallColList. 
-			 * ORDER: FROM BOTTOM TO TOP.
-		 
-		 * TODO
-		 	* Update fallColList with coordinates with same column from blankList. 
-		 	* Append newCandyList with candies returned from getRandCandy(). 
-		 */
-		
-		drawer.newFall(fallColList, newCandyList);
-		
-	}
-	
-	public void updateBoard() {
-
-		if (swapCandies(candy1, candy2)) {
-			do {
-				crushCandies(comboList);
-				moveCandies();
-				newFall(blankList);
-			} while (checkSequenceCandy().size() > 0) ;  
-		}
-			
-	}
-	
-	
 		
 }
