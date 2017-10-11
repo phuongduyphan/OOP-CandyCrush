@@ -5,33 +5,22 @@ import java.util.Random;
  * Return a random generated Candy object.
  *
  */
-public class Candy { //stores type, colour, image of candy
-	static private int numberOfType = 0;
-	static private int numberOfColour = 0;
-	private int type, colour;
-	//Img image?
+public class Candy {
+	static private int numberOfType = GameBoard.getNumberofcandytype();
+	static private Random rand = new Random();
+	private int type;
 
-	public Candy(int type, int colour) {
+	public Candy(int type) {
 		this.type = type;
-		this.colour = colour;
-	}
-
-	public static int getNumberOfType() {
-		return numberOfType;
-	}
-
-	public static void setNumberOfType(int numberOfType) {
-		Candy.numberOfType = numberOfType;
 	}
 	
-	public static Candy getRandCandy() {
-		if(Candy.getNumberOfColour() == 0 || Candy.getNumberOfType() == 0) {
-			System.err.println("ERROR MESSAGE HERE");
-			return null;
+	public static int getRandCandy() {
+		if(numberOfType == 0) {
+			System.err.println("(!)numberOfType in Candy class == 0");
+			return -1;
 		}
-		Random rand = new Random();
-		Candy candy = new Candy(rand.nextInt(Candy.getNumberOfType()), rand.nextInt(Candy.getNumberOfColour()));
-		return candy;
+		//Candy candy = new Candy(rand.nextInt(numberOfType));
+		return rand.nextInt(numberOfType);
 	}
 
 	public int getType() {
@@ -40,24 +29,14 @@ public class Candy { //stores type, colour, image of candy
 
 	public void setType(int type) {
 		this.type = type;
+	}	
+
+	public static int getNumberOfType() {
+		return numberOfType;
 	}
 
-	public int getColour() {
-		return colour;
+	public static void setNumberOfType(int numberOfType) {
+		Candy.numberOfType = numberOfType;
 	}
-
-	public void setColour(int colour) {
-		this.colour = colour;
-	}
-
-	public static int getNumberOfColour() {
-		return numberOfColour;
-	}
-
-	public static void setNumberOfColour(int numberOfColour) {
-		Candy.numberOfColour = numberOfColour;
-	}
-	
-	
 	
 }

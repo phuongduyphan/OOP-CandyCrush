@@ -16,7 +16,7 @@ import javafx.util.Pair;
  *
  */
 public class GameBoard {
-	// Editable properties
+	/** Editable properties*/
 	private static final int windowWidth = 320;
 	private static final int numberOfColumn = 10;
 	private static final int numberOfRow = 10;
@@ -33,30 +33,31 @@ public class GameBoard {
 																	"Images/Quang.JPG",
 																	"Images/red.jpg"};
 
-	// Automatic properties
+	/** Automatic properties*/
 	private static final int cellWidth = windowWidth / numberOfColumn;
-	//private static final int cellHeight = cellWidth;
-	//	private static final int windowHeight = numberOfRow * cellHeight;
+//	private static final int cellHeight = cellWidth;
+	private static final int numberOfCandyType = imageDirectory.length;
+//	private static final int windowHeight = numberOfRow * cellHeight;
 	private static Random random = new Random();
 	private static GridPane gameBoardPane;
 	private static FXMLLoader gameBoardLoader;
 	private static ArrayList<ImageView> imgGrid = new ArrayList<ImageView>();
 	private static ArrayList<Image> imgList = new ArrayList<Image>();
 	private static Image emptyCell = new Image(emptyCellDirectory);
-	// private static GameBoardController gameBoardController;
+//	private static GameBoardController gameBoardController;
 
 	public GameBoard() throws Exception {
-		// Load FXML
+		/** Load FXML*/
 		gameBoardLoader = new FXMLLoader(getClass().getResource("GameBoard.fxml"));
 		gameBoardPane = gameBoardLoader.load();
 
-		// Load images
+		/** Load images*/
 		for (int i = 0; i < imageDirectory.length; ++i) imgList.add(new Image(imageDirectory[i]));
 		
-		//Generate board
+		/**Generate board*/
 		for (int i = 0; i < numberOfColumn; ++i) {
 			for (int j = 0; j < numberOfRow; ++j) {
-				imgGrid.add(new ImageView(imgList.get(random.nextInt(imgList.size()))));
+				imgGrid.add(new ImageView(imgList.get(random.nextInt(numberOfCandyType))));//still random here
 				imgGrid.get(imgGrid.size()-1).setFitWidth(cellWidth);
 				imgGrid.get(imgGrid.size()-1).setPreserveRatio(true);
 				gameBoardPane.add(imgGrid.get(imgGrid.size()-1), i, j);
@@ -126,8 +127,20 @@ public class GameBoard {
 	
 	public void getERekt() {
 		for(ImageView img : imgGrid) {
-			flip(img,imgList.get(random.nextInt(imgList.size())));
+			flip(img,imgList.get(random.nextInt(numberOfCandyType)));
 			//img.setImage(imgList.get(random.nextInt(imgList.size())));			
 		}
+	}
+
+	public static int getNumberofcolumn() {
+		return numberOfColumn;
+	}
+
+	public static int getNumberofrow() {
+		return numberOfRow;
+	}
+
+	public static int getNumberofcandytype() {
+		return numberOfCandyType;
 	}
 }
