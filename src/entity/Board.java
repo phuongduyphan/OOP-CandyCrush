@@ -110,7 +110,7 @@ public class Board {
 		return (checkSequenceCandy().size() > 0);
 	}
 	
-	public static void updateScore() {
+	private static void updateScore() {
 		score += checkSequenceCandy().size() * 100;
 		
 		//headerBoardController(Integer.toString(score)); ????
@@ -153,6 +153,7 @@ public class Board {
 	public static void updateBoard() {
 		do {
 			crushCandies();
+			updateScore();
 			DropNewCandy();
 		} while (haveCombo()) ;  
 	}
