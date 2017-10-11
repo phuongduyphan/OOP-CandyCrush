@@ -47,23 +47,21 @@ import tools.Drawer;
 public class Board {
 	private static int NUM_OF_ROWS = 10, NUM_OF_COLS = 10; //TODO FIXED SIZE?
 	private static int CELL_HEIGHT = 10, CELL_WIDTH = 10; //TODO FIXED SIZE?
-	private static int CANDY_TYPE;
-	private static ArrayList<Coordinate> comboList;
+	private static int numType;
 	private static Integer score;
 	private static Coordinate candy1, candy2;
-	private Drawer drawer;
+	//private static Drawer drawer;
 	private static Integer grid[][];
 	
 	public Board() {
 		grid = new Integer[NUM_OF_ROWS][NUM_OF_COLS];
 		drawer = new Drawer();
-		comboList = new ArrayList<Coordinate>();
 	}
 	
 	private static void generateBoard() {
 		for (int i = 0; i < NUM_OF_ROWS; i++) {
 			for (int j = 0; j < NUM_OF_COLS; j++) {
-				grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+				grid[i][j] = new Random().nextInt(numType) + 1;
 		
 		for (i = 0; i < NUM_OF_ROWS; i++) {
 			for (j = 0; j < NUM_OF_COLS; j++) {
@@ -71,7 +69,7 @@ public class Board {
 				if ((i >= 2) && (j < 2)) {
 					if ( (grid[i - 1][j] == grid[i - 2][j]) ) {
 						while (grid[i][j] == grid[i - 1][j])
-							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+							grid[i][j] = new Random().nextInt(numType) + 1;
 					}
 				}
 				
@@ -79,7 +77,7 @@ public class Board {
 				if ((i < 2) && (j >= 2)) {
 					if ( (grid[i][j - 1] == grid[i][j - 2]) ) {
 						while (grid[i][j] == grid[i][j - 1])
-							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+							grid[i][j] = new Random().nextInt(numType) + 1;
 					}
 				}
 				
@@ -89,17 +87,17 @@ public class Board {
 							&& (grid[i][j - 1] == grid[i][j - 2]) ) {
 						while ( (grid[i][j] == grid[i - 1][j]) 
 								&& (grid[i][j] == grid[i][j - 1]) )
-							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+							grid[i][j] = new Random().nextInt(numType) + 1;
 					}
 					else if ( (grid[i - 1][j] == grid[i - 2][j]) 
 							&& (grid[i][j - 1] != grid[i][j - 2]) ) {
 						while (grid[i][j] == grid[i - 1][j]) 
-							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+							grid[i][j] = new Random().nextInt(numType) + 1;
 					}
 					else if ( (grid[i - 1][j] != grid[i - 2][j]) 
 							&& (grid[i][j - 1] == grid[i][j - 2]) ) {
 						while (grid[i][j] == grid[i][j - 1])
-							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+							grid[i][j] = new Random().nextInt(numType) + 1;
 					}
 					
 				}
@@ -113,7 +111,7 @@ public class Board {
 	}
 	
 	public static void updateScore() {
-		score += comboList.size() * 100;
+		score += checkSequenceCandy().size() * 100;
 		
 		//headerBoardController(Integer.toString(score)); ????
 		
@@ -124,7 +122,7 @@ public class Board {
 	private static void swap(Coordinate candy1, Coordinate candy2) {
 		Integer temp, xCandy1, yCandy1, xCandy2, yCandy2;
 		xCandy1 = candy1.getKey(); yCandy1 = candy1.getValue();
-		xCandy2 = candy1.getKey(); yCandy2 = candy2.getValue();
+		xCandy2 = candy2.getKey(); yCandy2 = candy2.getValue();
 		
 		temp = grid[xCandy1][yCandy1];
 		grid[xCandy1][yCandy1] = grid[xCandy2][yCandy2];
@@ -146,16 +144,16 @@ public class Board {
 	
 
 	private static void crushCandies() {
-		for (Coordinate x : comboList)
+		for (Coordinate x : checkSequenceCandy())
 			grid[x.getKey()][x.getValue()] = 0;		
 		
-		drawer.crush(comboList);
+		drawer.crush(checkSequenceCandy());
 	}
 	
 	public static void updateBoard() {
 		do {
 			crushCandies();
-			dropNewCandy();
+			DropNewCandy();
 		} while (haveCombo()) ;  
 	}
 		
