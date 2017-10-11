@@ -5,20 +5,37 @@ import java.util.TreeSet;
 import javafx.util.Pair;
 
 /**
- * INSERT DESCRIPTION FOR PUBLIC METHOD HERE
- *
+ * @initialize() PUBLIC Initialize the game field: Fill, validate and show grid
+ * 
+ * @generateBoard() Fill board with randomly-generated values
+ * 
+ * @isValid() Check for at least one possible combo, i.e player can make at
+ *            least one more move.
+ * 
+ * @checkSequenceCandy() Check for sequence of candies on the screen and modify
+ *                       comboList if necessary. Return comboList
+ * 
+ * @haveCombo() Return checkSequenceCandy().size() > 0
+ * 
+ * @swapCandies(Coordinate candy1, Coordinate candy2) PUBLIC Exchange the
+ *                         coordinates of two candies. Check the swap: if not
+ *                         generate combo, swap back
+ * 
+ * @crushCandies() Set 0 to candies with coordinates from comboList.
+ * 
+ * @updateBoard() PUBLIC Update the board after each valid swap until stability
+ *                is attained.
+ * 
+ * @updateScore() PUBLIC Update score based on number of crushed candies
  */
+
 public class Board {
-	// private CellSelectionHandler cellSelectionHandler;
+
 	private int numberOfRow = 5, numberOfColumn = 5;
 	private int[][] grid;
 	private static ArrayList<Coordinate> comboList;
 	private static int score;
 
-	/**
-	 * TODO
-	 * @author Chau
-	 */
 	public Board() {
 		grid = new int[numberOfRow][numberOfColumn];
 		comboList = new ArrayList<Coordinate>();
@@ -84,7 +101,6 @@ public class Board {
 		yCandy1 = candy1.getValue();
 		xCandy2 = candy1.getKey();
 		yCandy2 = candy2.getValue();
-
 		temp = grid[xCandy1][yCandy1];
 		grid[xCandy1][yCandy1] = grid[xCandy2][yCandy2];
 		grid[xCandy2][yCandy2] = temp;
@@ -160,7 +176,7 @@ public class Board {
 	}
 
 	// for using inside DropNewCandy
-	private void MoveCandy(int[][] currentBoard) {
+	private void moveCandy(int[][] currentBoard) {
 
 		int startRow = 0, curRow = 0;
 		ArrayList<Pair<Coordinate, Coordinate>> list = new ArrayList<Pair<Coordinate, Coordinate>>();
@@ -203,7 +219,7 @@ public class Board {
 	}
 
 	// for using inside DropNewCandy
-	private void FallCandy(int[][] currentBoard) {
+	private void fallCandy(int[][] currentBoard) {
 		Integer candy;
 		ArrayList<Coordinate> listCoor = new ArrayList<Coordinate>();
 		ArrayList<Integer> listCandy = new ArrayList<Integer>();
@@ -224,10 +240,10 @@ public class Board {
 		printListFall(listCoor, listCandy);
 	}
 
-	public void DropNewCandy(int[][] currentBoard) {
-		MoveCandy(currentBoard);
+	public void dropNewCandy(int[][] currentBoard) {
+		moveCandy(currentBoard);
 		printBoard();
-		FallCandy(currentBoard);
+		fallCandy(currentBoard);
 		printBoard();
 	}
 
@@ -239,7 +255,7 @@ public class Board {
 		System.out.println("");
 	}
 
-	public ArrayList<Coordinate> CheckSequenceCandy(int[][] currentBoard) {
+	public ArrayList<Coordinate> checkSequenceCandy(int[][] currentBoard) {
 		int[][] hrow = new int[numberOfRow + 5][numberOfColumn + 5],
 				hcol = new int[numberOfRow + 5][numberOfColumn + 5];
 		ArrayList<Coordinate> list = new ArrayList<Coordinate>();
@@ -389,8 +405,8 @@ public class Board {
 		}
 		reader.close();
 		board1.setBoard(tmpBoard);
-		board1.DropNewCandy(board1.grid);
-		board1.printCrushCandy(board1.CheckSequenceCandy(board1.grid));
+		board1.dropNewCandy(board1.grid);
+		board1.printCrushCandy(board1.checkSequenceCandy(board1.grid));
 		board1.printBoard();
 		if (board1.isValid(tmpBoard))
 			System.out.println("True");
