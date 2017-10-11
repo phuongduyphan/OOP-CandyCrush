@@ -12,7 +12,15 @@ import javafx.util.Duration;
 import javafx.util.Pair;
 
 /**
- * INSERT DESCRIPTION FOR PUBLIC METHOD HERE
+ * @newFall(ArrayList<Coordinate> coorList, ArrayList<Integer> typeList)
+ * 
+ * @swap(Coordinate coor1, Coordinate coor2)
+ * 
+ * @crush(Coordinate coor)
+ * 
+ * @crush(ArrayList<Coordinate> coorList)
+ * 
+ * @move(ArrayList<Pair<Coordinate, Coordinate>> coorList)
  *
  */
 public class GameBoard {
@@ -84,6 +92,12 @@ public class GameBoard {
 	public void crush(Coordinate coor) { // doi mau ve 0
 		//imgGrid.get(toIdex(coor)).setImage(emptyCell);
 		flip(imgGrid.get(toIdex(coor)),emptyCell);
+	}
+	
+	public void crush(ArrayList<Coordinate> coorList) {
+		for(Coordinate coor : coorList) {
+			crush(coor);
+		}
 	}
 
 	public void move(ArrayList<Pair<Coordinate, Coordinate>> coorList) {

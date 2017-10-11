@@ -18,9 +18,9 @@ public class Main extends Application {
 
 	private static Stage stage;
 	private static Scene scene;
-	private static GameBoard gameBoard;
+	public static GameBoard gameBoard;
 	private static Pane headerPane;
-	private static HeaderBoardController headerBoardController;
+	public static HeaderBoardController headerBoard; //headerBoardController
 	private static FXMLLoader headerBoardLoader; 
 	
 
@@ -32,7 +32,7 @@ public class Main extends Application {
 		// Set up Header Board and its controller
 		headerBoardLoader = new FXMLLoader(getClass().getResource("HeaderBoard.fxml"));
 		headerPane = headerBoardLoader.load();
-		headerBoardController = headerBoardLoader.getController();
+		headerBoard = headerBoardLoader.getController();
 		
 		//Set up Game Board
 		gameBoard = new GameBoard();
@@ -53,7 +53,7 @@ public class Main extends Application {
 	
 	// To be executed every time the Time Handler updates
 	public static void timerAction() {
-		headerBoardController.setTimeValue(TimeHandler.getTimeLeft());
+		headerBoard.setTimeValue(TimeHandler.getTimeLeft());
 		gameBoard.getERekt();
 	}
 	

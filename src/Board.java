@@ -9,49 +9,118 @@ import javafx.util.Pair;
  *
  */
 public class Board {
-//	private CellSelectionHandler cellSelectionHandler;
-	private int numberOfRow = 5,numberOfColumn = 5;
+	// private CellSelectionHandler cellSelectionHandler;
+	private int numberOfRow = 5, numberOfColumn = 5;
 	private int[][] grid;
-	
+	private static ArrayList<Coordinate> comboList;
+	private static int score;
+
+	/**
+	 * TODO
+	 * @author Chau
+	 */
 	public Board() {
 		grid = new int[numberOfRow][numberOfColumn];
-	}
-	
-	/**
-	 * @return if all board is stable
-	 */
-	private boolean checkBoard() {
-		
-	}
-	
-	/**
-	 * @return if all board is stable
-	 * providing the previous state is stable and the only change is at given coordinate
-	 */
-	private boolean checkBoard(int row, int column) {
-		
-	}
-		
-	private boolean resetScore() {
-	
-	}
-	
-	private boolean updateBoard() {
-		
-	}
-	
-	private boolean updateScore() {
-		
-	}
-	
-	private boolean fillGrid() {
-		
-	}
-	
-	private boolean swapCandy() {
-		
+		comboList = new ArrayList<Coordinate>();
 	}
 
+	private void generateBoard() {
+		for (int i = 0; i < numberOfRow; i++) {
+			for (int j = 0; j < numberOfColumn; j++) {
+				grid[i][j] = Candy.getRandCandy();
+
+				for (i = 0; i < numberOfRow; i++) {
+					for (j = 0; j < numberOfColumn; j++) {
+						// CASE 1
+						if ((i >= 2) && (j < 2)) {
+							if ((grid[i - 1][j] == grid[i - 2][j])) {
+								while (grid[i][j] == grid[i - 1][j])
+									grid[i][j] = Candy.getRandCandy();
+							}
+						}
+
+						// CASE 2
+						if ((i < 2) && (j >= 2)) {
+							if ((grid[i][j - 1] == grid[i][j - 2])) {
+								while (grid[i][j] == grid[i][j - 1])
+									grid[i][j] = Candy.getRandCandy();
+							}
+						}
+
+						// CASE 3
+						if ((i >= 2) && (j >= 2)) {
+							if ((grid[i - 1][j] == grid[i - 2][j]) && (grid[i][j - 1] == grid[i][j - 2])) {
+								while ((grid[i][j] == grid[i - 1][j]) && (grid[i][j] == grid[i][j - 1]))
+									grid[i][j] = Candy.getRandCandy();
+							} else if ((grid[i - 1][j] == grid[i - 2][j]) && (grid[i][j - 1] != grid[i][j - 2])) {
+								while (grid[i][j] == grid[i - 1][j])
+									grid[i][j] = Candy.getRandCandy();
+							} else if ((grid[i - 1][j] != grid[i - 2][j]) && (grid[i][j - 1] == grid[i][j - 2])) {
+								while (grid[i][j] == grid[i][j - 1])
+									grid[i][j] = Candy.getRandCandy();
+							}
+
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private boolean haveCombo() {
+		return (checkSequenceCandy().size() > 0);
+	}
+
+	public static void updateScore() {
+		score += comboList.size() * 100;
+		Main.headerBoard.setScoreValue(score);
+	}
+
+	// swap PERFORMS SWAP ACTIONS
+	// AND CAN BE REUSED IN ANY METHODS OTHER THAN swapCandies
+	private void swap(Coordinate candy1, Coordinate candy2) {
+		Integer temp, xCandy1, yCandy1, xCandy2, yCandy2;
+		xCandy1 = candy1.getKey();
+		yCandy1 = candy1.getValue();
+		xCandy2 = candy1.getKey();
+		yCandy2 = candy2.getValue();
+
+		temp = grid[xCandy1][yCandy1];
+		grid[xCandy1][yCandy1] = grid[xCandy2][yCandy2];
+		grid[xCandy2][yCandy2] = temp;
+	}
+
+	public boolean swapCandies(Coordinate candy1, Coordinate candy2) {
+
+		swap(candy1, candy2);
+		Main.gameBoard.swap(candy1, candy2);
+
+		if (haveCombo()) { // if move doesn't generate combo, swap back
+			swap(candy1, candy2);
+			Main.gameBoard.swap(candy1, candy2);
+		}
+
+		return haveCombo();
+	}
+
+	private void crushCandies() {
+		for (Coordinate x : comboList)
+			grid[x.getKey()][x.getValue()] = 0;
+
+		Main.gameBoard.crush(comboList);
+	}
+
+	public void updateBoard() {
+		do {
+			crushCandies();
+			dropNewCandy();
+		} while (haveCombo());
+	}
+
+	/**
+	 * TODO
+	 * @author DUY
+	 */
 	// set initial size
 	public void setSize(int row, int col) {
 		this.numberOfRow = row;
@@ -79,7 +148,7 @@ public class Board {
 		System.out.println("");
 	}
 
-	// print ArrayList of Old and New Coorodinate when moving candies (for testing)
+	// print ArrayList of Old and New Coordinate when moving candies (for testing)
 	private void printListMove(ArrayList<Pair<Coordinate, Coordinate>> list) {
 		for (int i = 0; i < list.size(); i++) {
 			System.out.printf("Old Coor: %d %d ", ((list.get(i)).getKey()).getRow(),
