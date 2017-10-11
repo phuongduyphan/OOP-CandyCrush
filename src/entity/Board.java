@@ -64,15 +64,9 @@ public class Board {
 		for (int i = 0; i < NUM_OF_ROWS; i++) {
 			for (int j = 0; j < NUM_OF_COLS; j++) {
 				grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
-			}
-		}
-	}
-	
-	private static void initialize() {
-		generateBoard();
 		
-		for (int i = 0; i < NUM_OF_ROWS; i++) {
-			for (int j = 0; j < NUM_OF_COLS; j++) {
+		for (i = 0; i < NUM_OF_ROWS; i++) {
+			for (j = 0; j < NUM_OF_COLS; j++) {
 				//CASE 1
 				if ((i >= 2) && (j < 2)) {
 					if ( (grid[i - 1][j] == grid[i - 2][j]) ) {
@@ -91,23 +85,18 @@ public class Board {
 				
 				//CASE 3
 				if ((i >= 2) && (j >= 2)) {
-					//CASE: HAVE ROW AND COL SEQUENCES
 					if ( (grid[i - 1][j] == grid[i - 2][j]) 
 							&& (grid[i][j - 1] == grid[i][j - 2]) ) {
 						while ( (grid[i][j] == grid[i - 1][j]) 
 								&& (grid[i][j] == grid[i][j - 1]) )
 							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
 					}
-					
-					//CASE: HAVE COL SEQUENCE
-					if ( (grid[i - 1][j] == grid[i - 2][j]) 
+					else if ( (grid[i - 1][j] == grid[i - 2][j]) 
 							&& (grid[i][j - 1] != grid[i][j - 2]) ) {
 						while (grid[i][j] == grid[i - 1][j]) 
 							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
 					}
-					
-					//CASE: HAVE ROW SEQUENCE
-					if ( (grid[i - 1][j] != grid[i - 2][j]) 
+					else if ( (grid[i - 1][j] != grid[i - 2][j]) 
 							&& (grid[i][j - 1] == grid[i][j - 2]) ) {
 						while (grid[i][j] == grid[i][j - 1])
 							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
