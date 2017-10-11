@@ -60,16 +60,6 @@ public class Board {
 		comboList = new ArrayList<Coordinate>();
 	}
 	
-	public static void initialize() {
-		generateBoard();
-		
-		//generate until board is valid and has combo
-		while (!isValid() || !haveCombo())
-			generateBoard();
-		 
-		drawer.drawBoard();
-	}
-	
 	private static void generateBoard() {
 		for (int i = 0; i < NUM_OF_ROWS; i++) {
 			for (int j = 0; j < NUM_OF_COLS; j++) {
@@ -78,32 +68,55 @@ public class Board {
 		}
 	}
 	
-	private static ArrayList<Coordinate> checkSequenceCandy() {
-		comboList.clear(); //Reset comboList.
+	private static void initialize() {
+		generateBoard();
 		
-		//CHECK ROW
 		for (int i = 0; i < NUM_OF_ROWS; i++) {
-			for (int j = 0; j < NUM_OF_COLS - 2; j++) {
-				if ( (grid[i][j] == grid[i][j + 1]) && (grid[i][j] == grid[i][j + 2]) ) {
-					comboList.add(new Coordinate(i, j));
-					comboList.add(new Coordinate(i, j + 1));
-					comboList.add(new Coordinate(i, j + 2));
-				}
-			}
-		}
-		
-		//CHECK COLUMN
-		for (int i = 0; i < NUM_OF_ROWS - 2; i++) {
 			for (int j = 0; j < NUM_OF_COLS; j++) {
-				if ( (grid[i][j] == grid[i+ 1][j]) && (grid[i][j] == grid[i+2][j]) ) {
-					comboList.add(new Coordinate(i, j));
-					comboList.add(new Coordinate(i + 1, j));
-					comboList.add(new Coordinate(i + 2, j));
+				//CASE 1
+				if ((i >= 2) && (j < 2)) {
+					if ( (grid[i - 1][j] == grid[i - 2][j]) ) {
+						while (grid[i][j] == grid[i - 1][j])
+							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+					}
 				}
+				
+				//CASE 2
+				if ((i < 2) && (j >= 2)) {
+					if ( (grid[i][j - 1] == grid[i][j - 2]) ) {
+						while (grid[i][j] == grid[i][j - 1])
+							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+					}
+				}
+				
+				//CASE 3
+				if ((i >= 2) && (j >= 2)) {
+					//CASE: HAVE ROW AND COL SEQUENCES
+					if ( (grid[i - 1][j] == grid[i - 2][j]) 
+							&& (grid[i][j - 1] == grid[i][j - 2]) ) {
+						while ( (grid[i][j] == grid[i - 1][j]) 
+								&& (grid[i][j] == grid[i][j - 1]) )
+							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+					}
+					
+					//CASE: HAVE COL SEQUENCE
+					if ( (grid[i - 1][j] == grid[i - 2][j]) 
+							&& (grid[i][j - 1] != grid[i][j - 2]) ) {
+						while (grid[i][j] == grid[i - 1][j]) 
+							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+					}
+					
+					//CASE: HAVE ROW SEQUENCE
+					if ( (grid[i - 1][j] != grid[i - 2][j]) 
+							&& (grid[i][j - 1] == grid[i][j - 2]) ) {
+						while (grid[i][j] == grid[i][j - 1])
+							grid[i][j] = new Random().nextInt(CANDY_TYPE) + 1;
+					}
+					
+				}
+				
 			}
 		}
-		
-		return comboList;
 	}
 	
 	private static boolean haveCombo() {
