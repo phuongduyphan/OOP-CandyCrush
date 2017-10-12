@@ -1,4 +1,4 @@
-package entity;
+
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -8,24 +8,15 @@ import tools.Drawer;
 
 
 /**
- * @initialize()
- * PUBLIC
- * Initialize the game field: 
- * Fill, validate and show grid
- * 
  * @generateBoard()
- * Fill board with randomly-generated values
- * 
- * @isValid()
- * Check for at least one possible combo, 
- * i.e player can make at least one more move.
- * 		
- * @checkSequenceCandy()
- * Check for sequence of candies on the screen and modify comboList if necessary.
- * Return comboList
+ * PUBLIC
+ * Initialize game field with randomly-generated and validated board
  * 
  * @haveCombo()
  * Return checkSequenceCandy().size() > 0
+ * 
+ * @updateScore()
+ * Update score based on number of crushed candies
  * 
  * @swapCandies(Coordinate candy1, Coordinate candy2)
  * PUBLIC
@@ -33,20 +24,16 @@ import tools.Drawer;
  * Check the swap: if not generate combo, swap back
  * 
  * @crushCandies()
- * Set 0 to candies with coordinates from comboList.  
+ * Set 0 to candies with coordinates returned from checkSequenceCandy().  
  * 
  * @updateBoard()
  * PUBLIC
  * Update the board after each valid swap until stability is attained.
  * 
- * @updateScore()
- * PUBLIC
- * Update score based on number of crushed candies
  */
 
 public class Board {
 	private static int NUM_OF_ROWS = 10, NUM_OF_COLS = 10; //TODO FIXED SIZE?
-	private static int CELL_HEIGHT = 10, CELL_WIDTH = 10; //TODO FIXED SIZE?
 	private static int numType;
 	private static Integer score;
 	private static Coordinate candy1, candy2;
@@ -62,9 +49,11 @@ public class Board {
 		for (int i = 0; i < NUM_OF_ROWS; i++) {
 			for (int j = 0; j < NUM_OF_COLS; j++) {
 				grid[i][j] = new Random().nextInt(numType) + 1;
+			}
+		}
 		
-		for (i = 0; i < NUM_OF_ROWS; i++) {
-			for (j = 0; j < NUM_OF_COLS; j++) {
+		for (int i = 0; i < NUM_OF_ROWS; i++) {
+			for (int j = 0; j < NUM_OF_COLS; j++) {
 				//CASE 1
 				if ((i >= 2) && (j < 2)) {
 					if ( (grid[i - 1][j] == grid[i - 2][j]) ) {
@@ -115,8 +104,8 @@ public class Board {
 		
 		//headerBoardController(Integer.toString(score)); ????
 		
-	}
-	
+	}	
+
 	//swap PERFORMS SWAP ACTIONS
 	//AND CAN BE REUSED IN ANY METHODS OTHER THAN swapCandies
 	private static void swap(Coordinate candy1, Coordinate candy2) {
@@ -127,10 +116,10 @@ public class Board {
 		temp = grid[xCandy1][yCandy1];
 		grid[xCandy1][yCandy1] = grid[xCandy2][yCandy2];
 		grid[xCandy2][yCandy2] = temp;
-	}
+	}.
 
-	public static boolean swapCandies(Coordinate candy1, Coordinate candy2) {
-		
+	public boolean swapCandies(Coordinate candy1, Coordinate candy2) {
+	
 		swap(candy1, candy2);
 		drawer.swap(candy1, candy2);
 		
@@ -150,11 +139,11 @@ public class Board {
 		drawer.crush(checkSequenceCandy());
 	}
 	
-	public static void updateBoard() {
+	public void updateBoard() {
 		do {
 			crushCandies();
 			updateScore();
-			DropNewCandy();
+			dropNewCandy();
 		} while (haveCombo()) ;  
 	}
 		
