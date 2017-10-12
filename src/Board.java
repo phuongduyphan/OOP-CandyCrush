@@ -1,5 +1,3 @@
-
-
 import java.util.ArrayList;
 import java.util.Random;
 import javafx.util.Pair;
@@ -45,7 +43,7 @@ public class Board {
 		drawer = new Drawer();
 	}
 	
-	private static void generateBoard() {
+	public void generateBoard() {
 		for (int i = 0; i < NUM_OF_ROWS; i++) {
 			for (int j = 0; j < NUM_OF_COLS; j++) {
 				grid[i][j] = new Random().nextInt(numType) + 1;
@@ -116,7 +114,7 @@ public class Board {
 		temp = grid[xCandy1][yCandy1];
 		grid[xCandy1][yCandy1] = grid[xCandy2][yCandy2];
 		grid[xCandy2][yCandy2] = temp;
-	}.
+	}
 
 	public boolean swapCandies(Coordinate candy1, Coordinate candy2) {
 	
