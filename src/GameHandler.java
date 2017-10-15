@@ -1,5 +1,21 @@
 
 public class GameHandler {
+	
+	public void play() {
+		Board b = new Board();
+		b.initBoard();
+		
+		while (true) {
+			if (!isValid())
+				b.initBoard();
+			
+			//TODO receive user input in candy1 and candy2
+			
+			if (swapCandies(candy1, candy2))
+				b.updateBoard();
+		}
+	}
+	
 	public void startNewGame() {
 		
 	}

@@ -7,6 +7,9 @@ import tools.Drawer;
 
 /**
  * @generateBoard()
+ * Generate board with no candy sequences
+ * 
+ * @initBoard()
  * PUBLIC
  * Initialize game field with randomly-generated and validated board
  * 
@@ -35,7 +38,7 @@ public class Board {
 	private static int numType;
 	private static Integer score;
 	private static Coordinate candy1, candy2;
-	//private static Drawer drawer;
+	private static Drawer drawer;
 	private static Integer grid[][];
 	
 	public Board() {
@@ -43,7 +46,7 @@ public class Board {
 		drawer = new Drawer();
 	}
 	
-	public void generateBoard() {
+	private static void generateBoard() {
 		for (int i = 0; i < NUM_OF_ROWS; i++) {
 			for (int j = 0; j < NUM_OF_COLS; j++) {
 				grid[i][j] = new Random().nextInt(numType) + 1;
@@ -91,6 +94,14 @@ public class Board {
 				
 			}
 		}
+	}
+	
+	public void initBoard() {
+		do
+			generateBoard();
+		while (!isValid);
+			
+		drawer.showBoard(); //??
 	}
 	
 	private static boolean haveCombo() {
