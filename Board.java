@@ -1,10 +1,41 @@
 import java.util.*;
 import javafx.util.*;
 
+/** DESCRIPTION
+ * 
+ * @setSize(int row, int col)
+ * 
+ * @setNumType(int numType)
+ * 
+ * @DropNewCandy()
+ * 
+ * @MoveCandy()
+ * 
+ * @FallCandy()
+ * 
+ * @CheckSequenceCandy()
+ * 
+ * @CheckInside(int row, int col)
+ * 
+ * @isValid()
+ * 
+ * @generateBoard()
+ * 
+ * @swap(Coordinate candy1, Coordinate candy2)
+ * 
+ * @swapCandies(Coordinate candy1, Coordinate candy2)
+ * 
+ * @updateBoard()
+ * 
+ * @updateScore()
+ * 
+ */
+
 public class Board {
 	private int row = 5,col = 5;
 	private int[][] grid;
 	private int numType;
+	//private Drawer drawer;
 	
 	// set initial size
 	public void setSize(int row, int col) {
@@ -26,7 +57,7 @@ public class Board {
 //		}
 //	}
 	
-	// print for testing
+	/****PRINT FOR TESTING
 	public void printBoard() {
 		for (int i=1; i<= row; i++) {
 			for (int j=1; j<= col; j++) {
@@ -37,7 +68,7 @@ public class Board {
 		System.out.println("");
 	}
 	
-	// print ArrayList of Old and New Coorodinate when moving candies (for testing)
+	// print ArrayList of Old and New Coordinate when moving candies (for testing)
 	private void printListMove(ArrayList<Pair<Coordinate,Coordinate>> list) { 
 		for (int i=0; i< list.size(); i++) {
 			System.out.printf("Old Coor: %d %d ", ((list.get(i)).getKey()).getRow(),((list.get(i)).getKey()).getColumn()); 
@@ -45,6 +76,7 @@ public class Board {
 		}
 		System.out.println("");
 	}
+	*****/
 	
 	// for using inside DropNewCandy
 	private void MoveCandy() {
@@ -63,7 +95,7 @@ public class Board {
 				}
 			}
 			
-			curRow = startRow; 
+			curRow = startRow; //holds the lowest position of 0 in a column
 			for (int i=startRow; i>=1; i--) {
 				if (grid[i][j] != 0) {
 					grid[curRow][j] = grid[i][j];
@@ -79,8 +111,10 @@ public class Board {
 			}
 		}	
 		//printListMove(list);
+		//drawer.move(list);
 	}
 	
+	/****PRINTING FOR TESTING
 	// printArrayList of Coordinate and Type of new Candies Fall (for testing)
 	private void printListFall(ArrayList<Coordinate> listCoor,ArrayList<Integer> listCandy) {
 		for (int i=0; i<listCoor.size(); i++) {
@@ -89,6 +123,7 @@ public class Board {
 		}
 		System.out.println("");
 	}
+	*****/
 	
 	// for using inside DropNewCandy
 	private void FallCandy() {
@@ -111,6 +146,7 @@ public class Board {
 			}
 		}
 		//printListFall(listCoor,listCandy);
+		//drawer.fall(listCoor,listCandy);
 	}
 	
 	public void DropNewCandy() {
@@ -120,13 +156,14 @@ public class Board {
 		//printBoard();
 	}
 	
-	// for testing
+	/****PRINTING FOR TESTING
 	public void printCrushCandy(ArrayList<Coordinate> list) {
 		for (int i=0; i < list.size(); i++) {
 			System.out.printf("Coor: %d %d \n", list.get(i).getRow(), list.get(i).getColumn());
 		}
 		System.out.println("");
 	}
+	*****/
 	
 	public ArrayList<Coordinate> CheckSequenceCandy() {
 		int[][] hrow = new int[row+5][col+5], hcol = new int[row+5][col+5];
@@ -134,6 +171,7 @@ public class Board {
 		TreeSet<Coordinate> SetList = new TreeSet<Coordinate>(new CoorComp());
 		Coordinate coor;
 		
+		//search for sequences and store row/column sequences in hrow/hcol
 		for (int i=1; i<= row; i++) {
 			for (int j=1; j<= col; j++) {
 				if (grid[i][j] == grid[i][j-1]) {
@@ -149,6 +187,7 @@ public class Board {
 			}
 		}
 		
+		//set candies in sequences to 0 and add coordinates to TreeSet
 		for (int i=row; i>=1; i--) {
 			for (int j=col; j>=1; j--) {
 				if (hrow[i][j] >= 3) {
@@ -169,10 +208,14 @@ public class Board {
 			}
 		}
 		
+		//append the coordinates to a list
 		Iterator<Coordinate> it = SetList.iterator();
 		while (it.hasNext()) {
 			list.add(it.next());
 		}
+		
+		//if (list.size() > 0)
+		//	drawer.crushCandies(list);
 		
 		return list;
 	}
@@ -189,14 +232,18 @@ public class Board {
 		for (int i=1; i<= row; i++) {
 			for (int j=1; j<=col; j++) {
 				
-				// Case 1
+				/**CASE 1: Row sequence created by an upward swap**/
 				curRow = i+1;
-				curCol = j+1;
 				cnt = 0;
+				
+				//Check RHS positions
+				curCol = j+1;
 				while (CheckInside(curRow,curCol) && grid[curRow][curCol] == grid[i][j]) {
 					curCol++;
 					cnt++;
 				}
+				
+				//Check LHS positions
 				curCol = j-1;
 				while (CheckInside(curRow,curCol) && grid[curRow][curCol] == grid[i][j]) {
 					curCol--;
@@ -207,50 +254,61 @@ public class Board {
 					return true;
 				}
 				
-				// Case 2
+				/**CASE 2: Row sequence created by a downward swap**/
 				curRow = i-1;
-				curCol = j+1;
 				cnt = 0;
+				
+				//Check RHS positions
+				curCol = j+1;
 				while (CheckInside(curRow,curCol) && grid[curRow][curCol] == grid[i][j]) {
 					curCol++;
 					cnt++;
 				}
+				//Check LHS positions
 				curCol = j-1;
 				while (CheckInside(curRow,curCol) && grid[curRow][curCol] == grid[i][j]) {
 					curCol--;
 					cnt++;
 				}
+				
 				if (cnt >= 2) {
 					System.out.printf("Next move : %d %d\n", i,j);
 					return true;
 				}
 				
-				// Case 3
-				curRow = i-1;
+				/**CASE 3: Column sequence created by a leftward swap**/
 				curCol = j-1;
 				cnt = 0;
+				
+				//Check upper positions
+				curRow = i-1;
 				while (CheckInside(curRow,curCol) && grid[curRow][curCol] == grid[i][j]) {
 					curRow--;
 					cnt++;
 				}
+				//Check lower positions
 				curRow = i+1;
 				while (CheckInside(curRow,curCol) && grid[curRow][curCol] == grid[i][j]) {
 					curRow++;
 					cnt++;
 				}
+				
 				if (cnt >= 2) {
 					System.out.printf("Next move : %d %d\n",i,j);
 					return true;
 				}
 				
-				// Case 4
-				curRow = i-1;
+				/**CASE 4: Column sequence created by a rightward swap**/
 				curCol = j+1;
 				cnt = 0;
+				
+				//Check upper positions
+				curRow = i-1;
 				while (CheckInside(curRow,curCol) && grid[curRow][curCol] == grid[i][j]) {
 					curRow--;
 					cnt++;
 				}
+				//Check lower positions
 				curRow = i+1;
 				while (CheckInside(curRow,curCol) && grid[curRow][curCol] == grid[i][j]) {
 					curRow++;
@@ -266,12 +324,14 @@ public class Board {
 	}
 	
 	public void generateBoard() {
+		/**Randomly generate board**/
 		for (int i = 1; i <= row; i++) {
 			for (int j = 1; j <= col; j++) {
 				grid[i][j] = new Random().nextInt(numType) + 1;
 			}
 		}
 		
+		/**Eliminate sequences**/
 		for (int i = 1; i <= row; i++) {
 			for (int j = 1; j <= col; j++) {
 				//CASE 1
@@ -321,14 +381,14 @@ public class Board {
 	}
 	
 	private void swap(Coordinate candy1, Coordinate candy2) {
-		Integer temp, xCandy1, yCandy1, xCandy2, yCandy2;
-		xCandy1 = candy1.getRow();
-		yCandy1 = candy1.getColumn();
-		xCandy2 = candy2.getRow();
-		yCandy2 = candy2.getColumn();
-		temp = grid[xCandy1][yCandy1];
-		grid[xCandy1][yCandy1] = grid[xCandy2][yCandy2];
-		grid[xCandy2][yCandy2] = temp;
+		Integer temp, row1, col1, row2, col2;
+		row1 = candy1.getRow();
+		col1 = candy1.getColumn();
+		row2 = candy2.getRow();
+		col2 = candy2.getColumn();
+		temp = grid[row1][col1];
+		grid[row1][col1] = grid[row2][col2];
+		grid[row2][col2] = temp;
 	}
 	
 	public boolean swapCandies(Coordinate candy1, Coordinate candy2) {
