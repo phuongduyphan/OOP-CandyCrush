@@ -1,27 +1,27 @@
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-/**
- * The Main controller of the game.
- *
- */
 public class Main extends Application {
-	// Windows Properties
+	/** Windows Properties*/
 	String screenTitle = "Candy Crush";
-	/** For window's size, game board's size, candy sprite please go to GameBoard.java*/
-	// Gameplay Properties
-	private static final int time = 100; //in second
+	
+	/** GameBoard properties*/
+	private static final int windowWidth = 320;
+	private static final int numberOfColumn = 10;
+	private static final int numberOfRow = 5;
+	
+	/** Timer Properties*/
+	private static final int time = 100; //sec
+	private static final int timerUpdateInterval = 1000; //ms
+	private static final int timerInitialDelay = 1000;
 
 	private static Stage stage;
 	private static Scene scene;
-	public static GameBoard gameBoard;
-	private static Pane headerPane;
-	public static HeaderBoardController headerBoard; //headerBoardController
-	private static FXMLLoader headerBoardLoader; 
+	private static GameBoard gameBoard;
+	private static HeaderBoard headerBoard;
+	private static TimeHandler timeHandler;
 	
 
 	public static void main(String[] args) {
@@ -30,19 +30,17 @@ public class Main extends Application {
 
 	public void start(Stage _stage) throws Exception {
 		// Set up Header Board and its controller
-		headerBoardLoader = new FXMLLoader(getClass().getResource("HeaderBoard.fxml"));
-		headerPane = headerBoardLoader.load();
-		headerBoard = headerBoardLoader.getController();
+		headerBoard = new HeaderBoard();
 		
 		//Set up Game Board
 		gameBoard = new GameBoard();
 		
 		// Set up timer
-		TimeHandler.setTime(time);
+		timeHandler = new TimeHandler(time);
 		
 		// Wrap up and display
 		VBox root = new VBox();
-		root.getChildren().addAll(headerPane, gameBoard.getGameBoardPane());
+		root.getChildren().addAll(headerBoard.getHeaderPane(), gameBoard.getGameBoardPane());
 		stage = _stage;
 		stage.setTitle(screenTitle);
 		stage.setResizable(false);
@@ -51,14 +49,37 @@ public class Main extends Application {
 		stage.show();
 	}
 	
-	// To be executed every time the Time Handler updates
+	/**
+	 * Is called between every timer-update-interval
+	 * @see timerUpdateInterval
+	 */
 	public static void timerAction() {
-		headerBoard.setTimeValue(TimeHandler.getTimeLeft());
-		gameBoard.getERekt();
+		headerBoard.setTimeValue(timeHandler.toString());
+		//gameBoard.getERekt();
 	}
 	
 	// To be executed when the Time Handler runs out
 	public static void timerEndAction() {
 		System.out.println("ENDGAME");
+	}
+
+	public static int getTimerupdateinterval() {
+		return timerUpdateInterval;
+	}
+
+	public static int getTimerinitialdelay() {
+		return timerInitialDelay;
+	}
+
+	public static int getNumberofcolumn() {
+		return numberOfColumn;
+	}
+
+	public static int getNumberofrow() {
+		return numberOfRow;
+	}
+	
+	public static int getWindowwidth() {
+		return windowWidth;
 	}
 }
