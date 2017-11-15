@@ -4,25 +4,27 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	/** Windows Properties*/
+	/** Windows Properties */
 	String screenTitle = "Candy Crush";
-	
-	/** GameBoard properties*/
+
+	/** GameBoard properties */
 	private static final int windowWidth = 320;
 	private static final int numberOfColumn = 10;
 	private static final int numberOfRow = 5;
-	
-	/** Timer Properties*/
-	private static final int time = 100; //sec
-	private static final int timerUpdateInterval = 1000; //ms
+
+	/** Timer Properties */
+	private static final int time = 100; // sec
+	private static final int timerUpdateInterval = 1000; // ms
 	private static final int timerInitialDelay = 1000;
 
+	/** Display */
 	private static Stage stage;
 	private static Scene scene;
 	private static GameBoard gameBoard;
 	private static HeaderBoard headerBoard;
+
+	/** Core */
 	private static TimeHandler timeHandler;
-	
 
 	public static void main(String[] args) {
 		launch(args);
@@ -31,13 +33,13 @@ public class Main extends Application {
 	public void start(Stage _stage) throws Exception {
 		// Set up Header Board and its controller
 		headerBoard = new HeaderBoard();
-		
-		//Set up Game Board
+
+		// Set up Game Board
 		gameBoard = new GameBoard();
-		
+
 		// Set up timer
 		timeHandler = new TimeHandler(time);
-		
+
 		// Wrap up and display
 		VBox root = new VBox();
 		root.getChildren().addAll(headerBoard.getHeaderPane(), gameBoard.getGameBoardPane());
@@ -48,16 +50,17 @@ public class Main extends Application {
 		stage.setScene(scene);
 		stage.show();
 	}
-	
+
 	/**
 	 * Is called between every timer-update-interval
+	 * 
 	 * @see timerUpdateInterval
 	 */
 	public static void timerAction() {
 		headerBoard.setTimeValue(timeHandler.toString());
-		//gameBoard.getERekt();
+		// gameBoard.getERekt();
 	}
-	
+
 	// To be executed when the Time Handler runs out
 	public static void timerEndAction() {
 		System.out.println("ENDGAME");
@@ -78,7 +81,7 @@ public class Main extends Application {
 	public static int getNumberofrow() {
 		return numberOfRow;
 	}
-	
+
 	public static int getWindowwidth() {
 		return windowWidth;
 	}

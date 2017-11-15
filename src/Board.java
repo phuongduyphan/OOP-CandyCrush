@@ -402,6 +402,10 @@ public class Board {
 		return haveCombo();
 	}
 	
+	public int getGridAt(int i, int j) {
+		return grid[i][j];
+	}
+	
 	public void updateBoard() {
 		do {
 			//updateScore

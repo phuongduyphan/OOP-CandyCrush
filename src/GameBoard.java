@@ -32,6 +32,8 @@ public class GameBoard {
 	private static ArrayList<ImageView> imgGrid = new ArrayList<ImageView>();
 	private static ArrayList<Image> imgList = new ArrayList<Image>();
 	private static Image emptyCell = new Image(emptyCellDirectory);
+	private static CellSelectionHandler cellSelectionHandler;
+	private static Board board;
 
 	public GameBoard() throws Exception {
 		// Init var
@@ -41,6 +43,7 @@ public class GameBoard {
 		numberOfCandyType = imageDirectory.length;
 		cellWidth = windowWidth / numberOfColumn;
 		cellHeight = cellWidth;
+		cellSelectionHandler = new CellSelectionHandler();
 
 		// Load FXML
 		FXMLLoader gameBoardLoader = new FXMLLoader(getClass().getResource("GameBoard.fxml"));
@@ -49,11 +52,18 @@ public class GameBoard {
 		// Load images
 		for (int i = 0; i < imageDirectory.length; ++i)
 			imgList.add(new Image(imageDirectory[i]));
+		
+		// Init board
+		board = new Board();
+		board.setSize(numberOfRow, numberOfColumn);
+		board.setNumType(getNumberOfCandyType());
+		board.generateBoard();
+		board.isValid();
 
 		// Generate board
 		for (int i = 0; i < numberOfRow; ++i) {
 			for (int j = 0; j < numberOfColumn; ++j) {
-				imgGrid.add(new ImageView(imgList.get(random.nextInt(numberOfCandyType))));// still random here
+				imgGrid.add(new ImageView(imgList.get(board.getGridAt(i, j))));
 				imgGrid.get(imgGrid.size() - 1).setFitWidth(cellWidth);
 				imgGrid.get(imgGrid.size() - 1).setPreserveRatio(true);
 				imgGrid.get(imgGrid.size() - 1).addEventHandler(MouseEvent.MOUSE_CLICKED,
@@ -74,11 +84,16 @@ public class GameBoard {
 
 	/**
 	 * Is called whenever a cell is clicked
+	 * Handling checking neighbor-ness by cellSelectionHandler 
 	 */
 	private void click(int idx) {
 		int row = toRow(idx);
 		int col = toCol(idx);
 		System.out.println("CLICKED AT " + row + " " + col);
+		ArrayList<Coordinate> selected = cellSelectionHandler.select(new Coordinate(row, col));
+		if(!selected.isEmpty()) {
+			board.swapCandies(selected.get(0), selected.get(1));
+		}
 	}
 
 	/**

@@ -20,6 +20,7 @@ public class TimeHandler {
 		}, initialDelay, updateInterval);
 	}
 	
+	
 	/**
 	 * Convert the current time into String
 	 * @return mm:ss
