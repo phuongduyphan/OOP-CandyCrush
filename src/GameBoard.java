@@ -16,9 +16,6 @@ import javafx.util.Pair;
 public class GameBoard {
 	/** Editable properties */
 	private static final String emptyCellDirectory = "Images/0.png";
-	private static final String[] imageDirectory = new String[] { "Images/red.png", "Images/blue.png",
-			"Images/yellow.png", "Images/cyan.png", "Images/purple.png", "Images/pink.png", "Images/green.png",
-			"Images/Chau.JPG", "Images/Duy.PNG", "Images/Quang.JPG", "Images/red.jpg" };
 
 	/** Variables */
 	private int windowWidth;
@@ -26,11 +23,10 @@ public class GameBoard {
 	private int numberOfRow;
 	private int cellWidth;
 	private int cellHeight;
-	private int numberOfCandyType = imageDirectory.length;
+	private int numberOfCandyType;
 	private GridPane gameBoardPane;
 	private static Random random = new Random();
 	private static ArrayList<ImageView> imgGrid = new ArrayList<ImageView>();
-	private static ArrayList<Image> imgList = new ArrayList<Image>();
 	private static Image emptyCell = new Image(emptyCellDirectory);
 	private static CellSelectionHandler cellSelectionHandler;
 	private static Board board;
@@ -40,7 +36,7 @@ public class GameBoard {
 		windowWidth = Main.getWindowwidth();
 		numberOfColumn = Main.getNumberofcolumn();
 		numberOfRow = Main.getNumberofrow();
-		numberOfCandyType = imageDirectory.length;
+		numberOfCandyType = Main.getNumberofcandytype();
 		cellWidth = windowWidth / numberOfColumn;
 		cellHeight = cellWidth;
 		cellSelectionHandler = new CellSelectionHandler();
@@ -48,22 +44,21 @@ public class GameBoard {
 		// Load FXML
 		FXMLLoader gameBoardLoader = new FXMLLoader(getClass().getResource("GameBoard.fxml"));
 		gameBoardPane = gameBoardLoader.load();
-
-		// Load images
-		for (int i = 0; i < imageDirectory.length; ++i)
-			imgList.add(new Image(imageDirectory[i]));
 		
 		// Init board
 		board = new Board();
 		board.setSize(numberOfRow, numberOfColumn);
-		board.setNumType(getNumberOfCandyType());
+		board.setNumType(Main.getNumberofcandytype());
 		board.generateBoard();
 		board.isValid();
 
 		// Generate board
+		/**
+		 * TODO APPLY GROUP HERE TO BLEND EFFECT AND COLOR
+		 */
 		for (int i = 0; i < numberOfRow; ++i) {
 			for (int j = 0; j < numberOfColumn; ++j) {
-				imgGrid.add(new ImageView(imgList.get(board.getGridAt(i, j))));
+				imgGrid.add(new ImageView(Candy.getColorImg(board.getGridAt(i, j))));
 				imgGrid.get(imgGrid.size() - 1).setFitWidth(cellWidth);
 				imgGrid.get(imgGrid.size() - 1).setPreserveRatio(true);
 				imgGrid.get(imgGrid.size() - 1).addEventHandler(MouseEvent.MOUSE_CLICKED,
@@ -108,7 +103,7 @@ public class GameBoard {
 		for (int i = 0; i < coorList.size(); ++i) {
 			// imgGrid.get(toIdex(coorList.get(i))).setImage(new
 			// Image(imageDirectory[typeList.get(i)]));
-			flip(imgGrid.get(i), imgList.get(typeList.get(i)));
+			flip(imgGrid.get(i), Candy.getColorImg(typeList.get(i)));
 		}
 	}
 
@@ -219,12 +214,8 @@ public class GameBoard {
 	 */
 	public void getERekt() {
 		for (ImageView img : imgGrid) {
-			flip(img, imgList.get(random.nextInt(numberOfCandyType)));
+			flip(img, Candy.getColorImg(random.nextInt(numberOfCandyType)));
 			// img.setImage(imgList.get(random.nextInt(imgList.size())));
 		}
-	}
-
-	public int getNumberOfCandyType() {
-		return numberOfCandyType;
 	}
 }

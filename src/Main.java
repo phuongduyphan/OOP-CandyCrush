@@ -11,6 +11,7 @@ public class Main extends Application {
 	private static final int windowWidth = 320;
 	private static final int numberOfColumn = 10;
 	private static final int numberOfRow = 5;
+	private static final int numberOfCandyType = 15;
 
 	/** Timer Properties */
 	private static final int time = 100; // sec
@@ -84,5 +85,9 @@ public class Main extends Application {
 
 	public static int getWindowwidth() {
 		return windowWidth;
+	}
+
+	public static int getNumberofcandytype() {
+		return numberOfCandyType;
 	}
 }
