@@ -64,6 +64,7 @@ public class Board {
 	/**
 	 * Shift the candies downward to fill the holes after crushing the candies
 	 * (for using inside DropNewCandy)
+	 * @see DropNewCandy
 	 */
 	private void MoveCandy() {
 		
@@ -97,7 +98,7 @@ public class Board {
 			}
 		}	
 		//printListMove(list);
-		//drawer.move(list);
+		Main.gameBoard.swap(list);
 	}
 	
 	/****PRINTING FOR TESTING
@@ -114,6 +115,8 @@ public class Board {
 	/**
 	 * Generate new random candies to fill the holes after shifting candies downwards
 	 * (for using inside DropNewCandy)
+	 * 
+	 * @see DropNewCandy
 	 */
 	private void FallCandy() {
 		Integer candy;
@@ -135,7 +138,7 @@ public class Board {
 			}
 		}
 		//printListFall(listCoor,listCandy);
-		//drawer.fall(listCoor,listCandy);
+		Main.gameBoard.newFall(listCoor,listCandy);
 	}
 	
 	/**
@@ -162,7 +165,7 @@ public class Board {
 	 * @return a list of coordinates of candies in sequences
 	 */
 	public ArrayList<Coordinate> CheckSequenceCandy() {
-		int[][] hrow = new int[row+5][col+5], hcol = new int[row+5][col+5];
+		int[][] hrow = new int[row+5][col+5], hcol = new int[row+5][col+5]; //thoi quen
 		ArrayList<Coordinate> list = new ArrayList<Coordinate>();
 		TreeSet<Coordinate> SetList = new TreeSet<Coordinate>(new CoorComp());
 		Coordinate coor;
@@ -210,8 +213,8 @@ public class Board {
 			list.add(it.next());
 		}
 		
-		//if (list.size() > 0)
-		//	drawer.crushCandies(list);
+		if (list.size() > 0)
+			Main.gameBoard.crush(list);
 		
 		return list;
 	}
@@ -219,9 +222,12 @@ public class Board {
 	/**
 	 * Check if a given coordinate is within the board range
 	 * (for using inside isValid function)
+	 * 
 	 * @param curRow row position
 	 * @param curCol column position
 	 * @return <b>true</b> if the coordinate is within range
+	 * 
+	 * @see isValid
 	 */
 	private boolean CheckInside(int curRow, int curCol) {
 		if (1<=curRow && curRow <= row && 1 <= curCol && curCol <= col) return true;
@@ -393,9 +399,11 @@ public class Board {
 	}
 	
 	/**
-	 * Exchange the positions of two candies.
+	 * Exchange the positions of two candies (for using inside swapCandies)
 	 * @param candy1 the coordinate of the first candy
 	 * @param candy2 the coordinate of the second candy
+	 * 
+	 * @see swapCandies
 	 */
 	private void swap(Coordinate candy1, Coordinate candy2) {
 		Integer temp, row1, col1, row2, col2;

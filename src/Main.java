@@ -20,7 +20,7 @@ public class Main extends Application {
 	/** Display */
 	private static Stage stage;
 	private static Scene scene;
-	private static GameBoard gameBoard;
+	public static GameBoard gameBoard;
 	private static HeaderBoard headerBoard;
 
 	/** Core */
