@@ -3,31 +3,6 @@ import javafx.util.*;
 
 /** DESCRIPTION
  * 
- * @setSize(int row, int col)
- * 
- * @setNumType(int numType)
- * 
- * @DropNewCandy()
- * 
- * @MoveCandy()
- * 
- * @FallCandy()
- * 
- * @CheckSequenceCandy()
- * 
- * @CheckInside(int row, int col)
- * 
- * @isValid()
- * 
- * @generateBoard()
- * 
- * @swap(Coordinate candy1, Coordinate candy2)
- * 
- * @swapCandies(Coordinate candy1, Coordinate candy2)
- * 
- * @updateBoard()
- * 
- * @updateScore()
  * 
  */
 
@@ -37,13 +12,21 @@ public class Board {
 	private int numType;
 	//private Drawer drawer;
 	
-	// set initial size
+	/**Set initial size
+	 *
+	 * @param row the number of rows
+	 * @param col the number of columns
+	 */
 	public void setSize(int row, int col) {
 		this.row = row;
 		this.col = col;
 		grid = new int[row+1][col + 1];
 	}
 	
+	/**Set number of candy types
+	 * 
+	 * @param numType the number of candy types
+	 */
 	public void setNumType(int numType) {
 		this.numType = numType;
 	}
@@ -78,7 +61,10 @@ public class Board {
 	}
 	*****/
 	
-	// for using inside DropNewCandy
+	/**
+	 * Shift the candies downward to fill the holes after crushing the candies
+	 * (for using inside DropNewCandy)
+	 */
 	private void MoveCandy() {
 		
 		int startRow = 0, curRow = 0;
@@ -125,7 +111,10 @@ public class Board {
 	}
 	*****/
 	
-	// for using inside DropNewCandy
+	/**
+	 * Generate new random candies to fill the holes after shifting candies downwards
+	 * (for using inside DropNewCandy)
+	 */
 	private void FallCandy() {
 		Integer candy;
 		Random rand = new Random();
@@ -149,6 +138,9 @@ public class Board {
 		//drawer.fall(listCoor,listCandy);
 	}
 	
+	/**
+	 * Update positions of candies after a valid swap
+	 */
 	public void DropNewCandy() {
 		MoveCandy();
 		//printBoard();
@@ -165,6 +157,10 @@ public class Board {
 	}
 	*****/
 	
+	/**
+	 * Check if there are sequences of three or more candies, and set them to 0
+	 * @return a list of coordinates of candies in sequences
+	 */
 	public ArrayList<Coordinate> CheckSequenceCandy() {
 		int[][] hrow = new int[row+5][col+5], hcol = new int[row+5][col+5];
 		ArrayList<Coordinate> list = new ArrayList<Coordinate>();
@@ -220,12 +216,22 @@ public class Board {
 		return list;
 	}
 	
-	// for using inside isValid function
+	/**
+	 * Check if a given coordinate is within the board range
+	 * (for using inside isValid function)
+	 * @param curRow row position
+	 * @param curCol column position
+	 * @return <b>true</b> if the coordinate is within range
+	 */
 	private boolean CheckInside(int curRow, int curCol) {
 		if (1<=curRow && curRow <= row && 1 <= curCol && curCol <= col) return true;
 		return false;
 	}
 	
+	/**
+	 * Check if player can make at least one more move
+	 * @return <b>true</b> if the player can make at least one more move
+	 */
 	public boolean isValid() {
 		int curRow,curCol, cnt;
 		
@@ -323,6 +329,9 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * Create board with random candies and modify to avoid sequences if necessary
+	 */
 	public void generateBoard() {
 		/**Randomly generate board**/
 		for (int i = 1; i <= row; i++) {
@@ -375,11 +384,19 @@ public class Board {
 		}
 	}
 	
-	
+	/**
+	 * Check for possible candy sequences
+	 * @return <b>true</b> if there are at least one candy sequence
+	 */
 	private boolean haveCombo() {
 		return (CheckSequenceCandy().size() > 0);
 	}
 	
+	/**
+	 * Exchange the positions of two candies.
+	 * @param candy1 the coordinate of the first candy
+	 * @param candy2 the coordinate of the second candy
+	 */
 	private void swap(Coordinate candy1, Coordinate candy2) {
 		Integer temp, row1, col1, row2, col2;
 		row1 = candy1.getRow();
@@ -391,6 +408,12 @@ public class Board {
 		grid[row2][col2] = temp;
 	}
 	
+	/**
+	 * Exchange the positions of two candies. If the move does not generate any sequence, undo the move.
+	 * @param candy1 the coordinate of the first candy
+	 * @param candy2 the coordinate of the second candy
+	 * @return <b>true</b> if swapping two candies generates at least one sequence of candies
+	 */
 	public boolean swapCandies(Coordinate candy1, Coordinate candy2) {
 
 		swap(candy1, candy2);
@@ -402,14 +425,23 @@ public class Board {
 		return haveCombo();
 	}
 	
+	/**
+	 * 
+	 * @param i
+	 * @param j
+	 * @return
+	 */
 	public int getGridAt(int i, int j) {
 		return grid[i][j];
 	}
 	
+	/**
+	 * Update the positions of candies until there is no sequence left. If the player is out of move, generate new board
+	 */
 	public void updateBoard() {
 		do {
 			//updateScore
-			printBoard();
+			//printBoard();
 			DropNewCandy();
 		} while (haveCombo());
 		
