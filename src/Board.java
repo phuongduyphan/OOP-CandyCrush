@@ -426,6 +426,16 @@ public class Board {
 	}
 	
 	/**
+	 * 
+	 * @param i
+	 * @param j
+	 * @return
+	 */
+	public int getGridAt(int i, int j) {
+		return grid[i][j];
+	}
+	
+	/**
 	 * Update the positions of candies until there is no sequence left. If the player is out of move, generate new board
 	 */
 	public void updateBoard() {
