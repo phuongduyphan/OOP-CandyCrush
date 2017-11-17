@@ -2,11 +2,11 @@ import javafx.util.Pair;
 
 public class Coordinate {
 	private Pair<Integer, Integer> p;
-	
+
 	public Coordinate(Integer key, Integer value) {
 		p = new Pair<Integer, Integer>(key, value);
 	}
-	
+
 	public Coordinate(int key, int value) {
 		this(new Integer(key), new Integer(value));
 	}
@@ -20,7 +20,8 @@ public class Coordinate {
 	}
 
 	public static boolean isNeighbours(Coordinate coor1, Coordinate coor2) {
-		if(Math.abs(coor1.getRow() - coor2.getRow()) + Math.abs(coor1.getColumn() - coor2.getColumn()) == 1) return true;
+		if (Math.abs(coor1.getRow() - coor2.getRow()) + Math.abs(coor1.getColumn() - coor2.getColumn()) == 1)
+			return true;
 		return false;
 	}
 

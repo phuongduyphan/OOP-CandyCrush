@@ -25,7 +25,9 @@ public class CellSelectionHandler {
 		if (selected == null) {
 			// Nothing has been selected, select
 			selected = coordinate;
-			return null;
+			ArrayList<Coordinate> array = new ArrayList<Coordinate>();
+			array.add(selected);
+			return array;
 		} else if (Coordinate.isNeighbours(this.selected, coordinate)) {
 			// The previous selected is a neighbour with the lastest, return both, delete both
 			ArrayList<Coordinate> array = new ArrayList<Coordinate>();

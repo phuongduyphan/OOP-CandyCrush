@@ -9,26 +9,24 @@ public class Main extends Application {
 
 	/** GameBoard properties */
 	private static final int windowWidth = 500;
-	private static final int numberOfColumn = 5;
-	private static final int numberOfRow = 5;
+	private static final int numberOfColumn = 10;
+	private static final int numberOfRow = 10;
 
 	/** Timer Properties */
 	private static final int time = 100; // sec
 	private static final int timerUpdateInterval = 1000; // ms
 	private static final int timerInitialDelay = 1000;
-	
+
 	/** Gameplay Properties */
 	private static final int numberOfCandyType = 5;
 
-	/** Display Var*/
+	/** Display Var */
 	private static Stage stage;
 	private static Scene scene;
+	private static Board board;
 	private static GameBoard gameBoard;
 	private static HeaderBoard headerBoard;
-
-	/** Core Var*/
 	private static TimeHandler timeHandler;
-	private static Board board;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -43,11 +41,9 @@ public class Main extends Application {
 
 		// Set up timer
 		timeHandler = new TimeHandler(time);
-		
+
 		// Set up Board
-		board = new Board();
-		board.setSize(numberOfRow, numberOfColumn);
-		board.setNumType(numberOfCandyType);
+		board = new Board(numberOfRow, numberOfColumn, numberOfCandyType);
 		board.generateBoard();
 
 		// Wrap up and display
@@ -107,5 +103,9 @@ public class Main extends Application {
 
 	public static GameBoard getGameBoard() {
 		return gameBoard;
+	}
+
+	public static HeaderBoard getHeaderBoard() {
+		return headerBoard;
 	}
 }
