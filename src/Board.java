@@ -62,14 +62,15 @@ public class Board {
 		Pair<Coordinate, Coordinate> tmpPair;
 
 		for (int j = 0; j < col; j++) {
-			startRow = 0;
+			startRow = -1;
 			for (int i = row - 1; i >= 0; i--) {
 				if (grid[i][j] == 0) {
 					startRow = i; // The first Row whose value is 0
 					break;
 				}
 			}
-
+			
+			if (startRow == -1) continue;
 			curRow = startRow; // holds the lowest position of 0 in a column
 			for (int i = startRow; i >= 0; i--) {
 				if (grid[i][j] != 0) {
