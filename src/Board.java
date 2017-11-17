@@ -85,10 +85,11 @@ public class Board {
 					curRow--;
 				}
 			}
+				System.out.println("moveCandy");
+				debugGrid();
+				Main.getGameBoard().updateBoard();
 		}
-		System.out.println("moveCandy");
-		debugGrid();
-		Main.getGameBoard().swap(list);
+//		Main.getGameBoard().swap(list);
 	}
 
 	/****
@@ -116,9 +117,13 @@ public class Board {
 					typeList.add(grid[i][j]);
 				}
 			}
-			Main.getGameBoard().setCandy(coorList, typeList);
+			if(coorList.isEmpty() == false) {
+				System.out.println("fallCandy");
+				debugGrid();
+				Main.getGameBoard().updateBoard();
+//				Main.getGameBoard().setCandy(coorList, typeList);
+			}
 		}
-		debugGrid();
 	}
 
 	/**
@@ -126,6 +131,7 @@ public class Board {
 	 */
 	public void dropNewCandy() {
 		moveCandy();
+		Main.getGameBoard().pause();
 		fallCandy();
 	}
 
@@ -161,20 +167,18 @@ public class Board {
 
 			}
 		}
-		System.out.println("CHECKING GRID:");
+		System.out.println("Check Sequence:");
 		for (int i = 0; i < row; ++i) {
 			for (int j = 0; j < col; ++j)
 				System.out.print(hrow[i][j] + " ");
 			System.out.println();
 		}
 		System.out.println();
-		System.out.println();
 		for (int i = 0; i < row; ++i) {
 			for (int j = 0; j < col; ++j)
 				System.out.print(hcol[i][j] + " ");
 			System.out.println();
 		}
-		System.out.println();
 		System.out.println("/***************************/");
 
 		// add candies in sequences coordinates to TreeSet
@@ -202,7 +206,6 @@ public class Board {
 			coor = it.next();
 			list.add(coor);
 		}
-		debugGrid();
 
 		return list;
 	}
@@ -375,9 +378,11 @@ public class Board {
 				coorList.add(new Coordinate(i, j));
 				typeList.add(new Integer(grid[i][j]));
 			}
-			Main.getGameBoard().setCandy(coorList, typeList);
+//			Main.getGameBoard().setCandy(coorList, typeList);
 		}
+		System.out.println("genBoard");
 		debugGrid();
+		Main.getGameBoard().updateBoard();
 	}
 
 	/**
@@ -399,7 +404,9 @@ public class Board {
 		temp = grid[row1][col1];
 		grid[row1][col1] = grid[row2][col2];
 		grid[row2][col2] = temp;
+		System.out.println("swap");
 		debugGrid();
+		Main.getGameBoard().updateBoard();
 	}
 
 	/**
@@ -416,17 +423,15 @@ public class Board {
 	public boolean swapCandies(Coordinate candy1, Coordinate candy2) {
 		swap(candy1, candy2);
 		ArrayList<Coordinate> list = checkSequenceCandy();
-		System.out.println("Combo formed?: " + list.size());
 		if (list.isEmpty() == false) {
-			Main.getGameBoard().swap(candy1, candy2);
-			crush(list);
+//			Main.getGameBoard().swap(candy1, candy2);
 			updateBoard();
 		} else {
 			swap(candy1, candy2);
-			Main.getGameBoard().flipFlop(candy1, candy2);
+//			Main.getGameBoard().flipFlop(candy1, candy2);
 		}
 		Main.getGameBoard().play();
-		return !list.isEmpty();
+		return (!list.isEmpty());
 	}
 
 	/**
@@ -437,8 +442,9 @@ public class Board {
 	private void crush(ArrayList<Coordinate> coorList) {
 		for (Coordinate coor : coorList)
 			grid[coor.getRow()][coor.getColumn()] = 0;
-		Main.getGameBoard().crush(coorList);
+//		Main.getGameBoard().crush(coorList);
 		debugGrid();
+		Main.getGameBoard().updateBoard();
 	}
 
 	/**
@@ -446,11 +452,16 @@ public class Board {
 	 * player is out of move, generate new board
 	 */
 	public void updateBoard() {
+		ArrayList<Coordinate> list = checkSequenceCandy();
 		do {
 			// updateScore
+			System.out.println("Combo formed?: " + list.size());
+			if (list.isEmpty() == false) {
+				crush(list);
+			}
 			dropNewCandy();
-			Main.getGameBoard().play();
-		} while (checkSequenceCandy().isEmpty() == false);
+			list = checkSequenceCandy();
+		} while (list.isEmpty() == false);
 
 		if (!isValid()) {
 			generateBoard();
@@ -464,6 +475,10 @@ public class Board {
 			System.out.println();
 		}
 		System.out.println();
+	}
+
+	public int[][] getGrid() {
+		return grid;
 	}
 
 }

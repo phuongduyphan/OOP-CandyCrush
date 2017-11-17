@@ -4,6 +4,7 @@ import java.util.ListIterator;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.ParallelTransition;
+import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.event.EventHandler;
@@ -30,6 +31,7 @@ public class GameBoard {
 	private static Image emptyCell = new Image(emptyCellDirectory);
 	private static CellSelectionHandler cellSelectionHandler;
 	private static SequentialTransition sequence;
+	private static int[][] grid;
 	/** Variables */
 	private int windowWidth;
 	private int numberOfColumn;
@@ -77,6 +79,7 @@ public class GameBoard {
 			gameBoardPane.getRowConstraints().add(new RowConstraints(cellHeight));
 			gameBoardPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
 		}
+		grid = new int[numberOfRow][numberOfColumn];
 	}
 
 	/**
@@ -134,7 +137,8 @@ public class GameBoard {
 	 */
 	 public void play() {
 		 ListIterator<Animation> list = sequence.getChildren().listIterator();
-		 while(list.hasNext()) System.out.print(list.next() + " ");
+		 System.out.println("play:");
+		 while(list.hasNext()) System.out.println(list.next());
 		 System.out.println();
 		 sequence.play();
 		 sequence.getChildren().clear();
@@ -205,6 +209,10 @@ public class GameBoard {
 		sequence.getChildren().add(transition);
 		System.out.println("Swap " + transition);
 		System.out.println("SWAP: " + coor1 + " <-> " + coor2);
+	}
+	
+	public void pause() {
+		sequence.getChildren().add(new PauseTransition(new Duration(flipTransitionDuration)));
 	}
 
 	/**
@@ -311,5 +319,21 @@ public class GameBoard {
 	 */
 	private int toRow(int idx) {
 		return idx / numberOfColumn;
+	}
+	
+	public void updateBoard() {
+		ParallelTransition transition = new ParallelTransition();
+		for(int i = numberOfRow-1; i >= 0; --i) {
+			for(int j = numberOfColumn-1; j >= 0; --j) {
+				if(grid[i][j] != Main.getBoard().getGrid()[i][j]) {
+					grid[i][j] = Main.getBoard().getGrid()[i][j];
+					ImageView imgView = imgGrid.get(toIndex(new Coordinate(i, j)));
+					Image img = imgList.get(grid[i][j]);
+					Animation animation = getFlipAnimation(imgView, img);
+					transition.getChildren().add(animation);
+				}
+			}
+		}
+		sequence.getChildren().add(transition);
 	}
 }
