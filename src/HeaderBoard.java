@@ -15,6 +15,8 @@ public class HeaderBoard {
 		FXMLLoader headerBoardLoader = new FXMLLoader(getClass().getResource("HeaderBoard.fxml"));
 		headerBoardLoader.setController(this);
 		headerPane = headerBoardLoader.load();
+		headerPane.setPrefWidth(Main.getWindowwidth());
+		headerPane.setPrefHeight(100);
 	}
     
     public void setTimeValue(String str) {
@@ -33,7 +35,7 @@ public class HeaderBoard {
     	scoreValue.setText(Integer.toString(str));
     }
 
-	public Pane getHeaderPane() {
+	public javafx.scene.layout.Pane getHeaderPane() {
 		return headerPane;
 	}
 }
