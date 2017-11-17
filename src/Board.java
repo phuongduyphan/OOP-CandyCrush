@@ -423,8 +423,8 @@ public class Board {
 		} else {
 			swap(candy1, candy2);
 			Main.getGameBoard().flipFlop(candy1, candy2);
-			Main.getGameBoard().play();
 		}
+		Main.getGameBoard().play();
 		return !list.isEmpty();
 	}
 
