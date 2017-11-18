@@ -3,24 +3,22 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 
+import javafx.scene.Group;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public abstract class Candy {
-	private static final String[] colorImageDirectory = new String[] { "Images/red.png", "Images/blue.png",
-			"Images/yellow.png", "Images/cyan.png", "Images/purple.png", "Images/pink.png", "Images/green.png",
-			"Images/Chau.JPG", "Images/Duy.PNG", "Images/Quang.JPG", "Images/red.jpg" };
-	
-	private static TreeMap<Integer, Supplier<Candy>> candyTypeProbabilityList;
+	private static final String[] colorImageDirectory = new String[] { "red.png", "blue.png",
+			"yellow.png", "cyan.png", "purple.png", "pink.png", "green.png",
+			"Chau.JPG", "Duy.PNG", "Quang.JPG", "red.jpg" };
+	private static int numberOfCandyColor = Main.getNumberofcandycolor();
 	private static Integer maxProba;
-	private static Random rand = new Random();
 	private static ArrayList<Image> colorImgList = new ArrayList<Image>();
-	
-	//ABSTRACT FIELD	
-	private static Image effectImage; 
-	
+	private static TreeMap<Integer, Supplier<Candy>> candyTypeProbabilityList;
+
 	private int color;
-	
+
 	public Candy() {
 	}
 
@@ -29,25 +27,25 @@ public abstract class Candy {
 		this.color = color;
 	}
 
-
-
 	/**
 	 * Add new candy type and control their probabilities here Probability of
 	 * occurrence of a type of candy is calculate by the formula P(c) = V(c) / sumP
 	 * P(c): Probability of occurrence of candy type c V(c): Probability value
 	 * defined for candy type c sumP: Summation of all probability value in the list
 	 */
-	public void init() {
+	public static void init() {
 		maxProba = 0;
+		candyTypeProbabilityList = new TreeMap<Integer, Supplier<Candy>>();
 		candyTypeProbabilityList.put((maxProba += 100), CandyNormal::new);
-		candyTypeProbabilityList.put((maxProba += 5), CandyVerticalBomb::new);	
+		candyTypeProbabilityList.put((maxProba += 3), Candy3x3Bomb::new);
+		candyTypeProbabilityList.put((maxProba += 3), CandyVerticalBomb::new);
 
-		assert(candyTypeProbabilityList.size() >= Main.getNumberofcandytype());
-		assert(colorImageDirectory.length >= Main.getNumberofcandytype());
-		
-		for (int i = 0; i < Main.getNumberofcandytype(); ++i)
-			colorImgList.add(new Image(colorImageDirectory[i]));
+		assert (candyTypeProbabilityList.size() >= Main.getNumberofcandycolor());
+		assert (colorImageDirectory.length >= Main.getNumberofcandycolor());
 
+		for (String dir : colorImageDirectory)
+			colorImgList.add(new Image(dir));
+		System.out.println(maxProba);
 	}
 
 	/**
@@ -60,13 +58,34 @@ public abstract class Candy {
 	 */
 	public static Candy getRandCandyType(int color) {
 		assert (candyTypeProbabilityList.size() != 0);
-		Candy candy = candyTypeProbabilityList.ceilingEntry(rand.nextInt(maxProba)).getValue().get();
-		candy.setColor(color);
+		Candy candy = candyTypeProbabilityList.ceilingEntry(new Random().nextInt(maxProba)).getValue().get();
+		candy.color = color;
+		return candy;
+	}
+
+	/**
+	 * Generate a candy with random type and random color
+	 * 
+	 * @return a random candy
+	 */
+	public static Candy getRandCandy() {
+		assert (candyTypeProbabilityList.size() != 0);
+		int type = new Random().nextInt(maxProba);
+		System.out.println(type + " " + candyTypeProbabilityList.ceilingEntry(type).getValue().getClass());
+		Candy candy = candyTypeProbabilityList.ceilingEntry(type).getValue().get();
+		candy.color = new Random().nextInt(numberOfCandyColor);
 		return candy;
 	}
 	
-	public static Image getColorImg(int index) {
-		return colorImgList.get(index);
+	public Group getImage() {
+		ImageView colorImgV = new ImageView(colorImgList.get(color));
+		ImageView typeImgV = new ImageView(this.getTypeImage());
+		colorImgV.setFitHeight(Main.getGameBoard().getCellHeight());
+		colorImgV.setFitWidth(Main.getGameBoard().getCellWidth());
+		typeImgV.setFitHeight(Main.getGameBoard().getCellHeight());
+		typeImgV.setFitWidth(Main.getGameBoard().getCellWidth());
+		typeImgV.setBlendMode(BlendMode.SRC_OVER);
+		return new Group(colorImgV, typeImgV);
 	}
 
 	/**
@@ -77,19 +96,11 @@ public abstract class Candy {
 	 *            The coordinate of the candy want to check
 	 * @return If the candy at the given coordinate is to be exploded
 	 */
-	public abstract boolean specialExplode(Coordinate thisCoor, Coordinate checkCoor);
+	public abstract ArrayList<Coordinate> specialExplode(Coordinate curCoor);
 	
+	public abstract Image getTypeImage();
 
 	public int getColor() {
 		return color;
 	}
-
-	public void setColor(int color) {
-		this.color = color;
-	}
-
-	public static void setEffectImage(Image effectImage) {
-		Candy.effectImage = effectImage;
-	}
-
 }
