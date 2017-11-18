@@ -22,10 +22,12 @@ public class CellSelectionHandler {
 	 * @return A null object if this is the first cell.<br>ArrayList<Coordinate> object contains two Coordinate objects if two adjacent cells are selected.<br>A null object if the given cell is not adjacent or is the same with the previous selected cell.
 	 */
 	public ArrayList<Coordinate> select(Coordinate coordinate) {
-		if (this.selected == null) {
+		if (selected == null) {
 			// Nothing has been selected, select
-			this.selected = coordinate;
-			return null;
+			selected = coordinate;
+			ArrayList<Coordinate> array = new ArrayList<Coordinate>();
+			array.add(selected);
+			return array;
 		} else if (Coordinate.isNeighbours(this.selected, coordinate)) {
 			// The previous selected is a neighbour with the lastest, return both, delete both
 			ArrayList<Coordinate> array = new ArrayList<Coordinate>();

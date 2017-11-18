@@ -1,64 +1,73 @@
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.ListIterator;
+
+import javafx.animation.Animation;
 import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
+import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import javafx.util.Pair;
+
 public class GameBoard {
 	/** Editable properties */
+	private static final int flipTransitionDuration = 100;
 	private static final String emptyCellDirectory = "Images/0.png";
+	private static final String[] imageDirectory = new String[] { emptyCellDirectory, "Images/red.png",
+			"Images/blue.png", "Images/yellow.png", "Images/cyan.png", "Images/purple.png", "Images/pink.png",
+			"Images/green.png", "Images/Chau.JPG", "Images/Duy.PNG", "Images/Quang.JPG", "Images/red.jpg" };
 
 	/** Variables */
+	private static ArrayList<ImageView> imgGrid = new ArrayList<ImageView>();
+	private static ArrayList<Image> imgList = new ArrayList<Image>();
+	private static Image emptyCell = new Image(emptyCellDirectory);
+	private int[][] grid;
 	private int windowWidth;
 	private int numberOfColumn;
 	private int numberOfRow;
 	private int cellWidth;
 	private int cellHeight;
-	private int numberOfCandyType;
 	private GridPane gameBoardPane;
-	private static Random random = new Random();
-	private static ArrayList<ImageView> imgGrid = new ArrayList<ImageView>();
-	private static Image emptyCell = new Image(emptyCellDirectory);
-	private static CellSelectionHandler cellSelectionHandler;
-	private static Board board;
+	private Coordinate currentSelected;
+	private SequentialTransition sequence;
+	private CellSelectionHandler cellSelectionHandler;
 
 	public GameBoard() throws Exception {
 		// Init var
 		windowWidth = Main.getWindowwidth();
 		numberOfColumn = Main.getNumberofcolumn();
 		numberOfRow = Main.getNumberofrow();
-		numberOfCandyType = Main.getNumberofcandytype();
 		cellWidth = windowWidth / numberOfColumn;
 		cellHeight = cellWidth;
 		cellSelectionHandler = new CellSelectionHandler();
+		sequence = new SequentialTransition();
+		currentSelected = null;
 
 		// Load FXML
 		FXMLLoader gameBoardLoader = new FXMLLoader(getClass().getResource("GameBoard.fxml"));
 		gameBoardPane = gameBoardLoader.load();
-		
-		// Init board
-		board = new Board();
-		board.setSize(numberOfRow, numberOfColumn);
-		board.setNumType(Main.getNumberofcandytype());
-		board.generateBoard();
-		board.isValid();
+		gameBoardPane.setPrefWidth(Main.getWindowwidth());
 
-		// Generate board
-		/**
-		 * TODO APPLY GROUP HERE TO BLEND EFFECT AND COLOR
-		 */
+		// Load images
+		assert(imageDirectory.length > Main.getNumberofcandytype());
+		for (int i = 0; i < imageDirectory.length; ++i)
+			imgList.add(new Image(imageDirectory[i]));
+
+		// Init board
 		for (int i = 0; i < numberOfRow; ++i) {
 			for (int j = 0; j < numberOfColumn; ++j) {
-				imgGrid.add(new ImageView(Candy.getColorImg(board.getGridAt(i, j))));
+				imgGrid.add(new ImageView(emptyCell)); // Init to empty cell
 				imgGrid.get(imgGrid.size() - 1).setFitWidth(cellWidth);
 				imgGrid.get(imgGrid.size() - 1).setPreserveRatio(true);
 				imgGrid.get(imgGrid.size() - 1).addEventHandler(MouseEvent.MOUSE_CLICKED,
@@ -75,118 +84,80 @@ public class GameBoard {
 			gameBoardPane.getRowConstraints().add(new RowConstraints(cellHeight));
 			gameBoardPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
 		}
+		grid = new int[numberOfRow][numberOfColumn];
+	}
+
+	public GridPane getGameBoardPane() {
+		return gameBoardPane;
+	}
+
+	public void pause() {
+		sequence.getChildren().add(new PauseTransition(new Duration(flipTransitionDuration)));
 	}
 
 	/**
-	 * Is called whenever a cell is clicked
-	 * Handling checking neighbor-ness by cellSelectionHandler 
+	 * Play then reset the sequence
+	 */
+	public void play() {
+		ListIterator<Animation> list = sequence.getChildren().listIterator();
+		System.out.println("play:");
+		while (list.hasNext())
+			System.out.println(list.next());
+		System.out.println();
+		sequence.play();
+		sequence.getChildren().clear();
+	}
+
+	public void updateBoard() {
+		ParallelTransition transition = new ParallelTransition();
+		for (int i = numberOfRow - 1; i >= 0; --i) {
+			for (int j = numberOfColumn - 1; j >= 0; --j) {
+				if (grid[i][j] != Main.getBoard().getGrid()[i][j]) {
+					grid[i][j] = Main.getBoard().getGrid()[i][j];
+					ImageView imgView = imgGrid.get(toIndex(new Coordinate(i, j)));
+					Image img = imgList.get(grid[i][j]);
+					Animation animation = getFlipAnimation(imgView, img);
+					transition.getChildren().add(animation);
+				}
+			}
+		}
+		sequence.getChildren().add(transition);
+	}
+
+	/**
+	 * Is called whenever a cell is clicked Handling checking neighbor-ness by
+	 * cellSelectionHandler
 	 */
 	private void click(int idx) {
+		if(sequence.getStatus() == Animation.Status.RUNNING) return;
 		int row = toRow(idx);
 		int col = toCol(idx);
 		System.out.println("CLICKED AT " + row + " " + col);
 		ArrayList<Coordinate> selected = cellSelectionHandler.select(new Coordinate(row, col));
-		if(!selected.isEmpty()) {
-			board.swapCandies(selected.get(0), selected.get(1));
+		if (selected != null) {
+			assert (selected.size() <= 2);
+			for (Coordinate coor : selected)
+				imgGrid.get(toIndex(coor)).setEffect(new InnerShadow(BlurType.ONE_PASS_BOX,
+						Color.rgb(88, 237, 235, 0.5), cellWidth * 0.25, cellWidth * 0.1, 0, 0));
+			if (selected.size() == 2) {
+				currentSelected = null;
+				for (Coordinate coor : selected)
+					imgGrid.get(toIndex(coor)).setEffect(null);
+				Main.getBoard().swapCandies(selected.get(0), selected.get(1));
+			} else
+				currentSelected = selected.get(0);
+		} else {
+			assert (currentSelected != null);
+			imgGrid.get(toIndex(currentSelected)).setEffect(null);
+			currentSelected = null;
 		}
 	}
 
 	/**
-	 * Change candies from list of Coordinate according to list of type.
-	 * 
-	 * @param coorList
-	 *            List of to-be-changed candies' coordinates
-	 * @param typeList
-	 *            List of type for candies to be changed into
+	 * Fundamental Transition
 	 */
-	public void newFall(ArrayList<Coordinate> coorList, ArrayList<Integer> typeList) { // doi mau tu 0 thanh type
-		for (int i = 0; i < coorList.size(); ++i) {
-			// imgGrid.get(toIdex(coorList.get(i))).setImage(new
-			// Image(imageDirectory[typeList.get(i)]));
-			flip(imgGrid.get(i), Candy.getColorImg(typeList.get(i)));
-		}
-	}
-
-	/**
-	 * Swap the type of two candies at two coordinates
-	 * 
-	 * @param coor1
-	 *            First coordinate
-	 * @param coor2
-	 *            Second coordinate
-	 */
-	public void swap(Coordinate coor1, Coordinate coor2) {
-		Image i1 = imgGrid.get(toIdex(coor1)).getImage();
-		Image i2 = imgGrid.get(toIdex(coor2)).getImage();
-
-		imgGrid.get(toIdex(coor1)).setImage(i2);
-		imgGrid.get(toIdex(coor2)).setImage(i1);
-	}
-
-	/**
-	 * Swap a list of coordinates pairs
-	 * 
-	 * @param coorList
-	 *            List of coordinates pairs
-	 */
-	public void swap(ArrayList<Pair<Coordinate, Coordinate>> coorList) {
-		for (Pair<Coordinate, Coordinate> pair : coorList) {
-			Coordinate before = pair.getKey();
-			Coordinate after = pair.getValue();
-			swap(before, after);
-		}
-	}
-
-	/**
-	 * Change type of a candy at a coordinate to 0 (empty cell)
-	 * 
-	 * @param coor
-	 *            the desired coordinate
-	 */
-	public void crush(Coordinate coor) { // doi mau ve 0
-		// imgGrid.get(toIdex(coor)).setImage(emptyCell);
-		flip(imgGrid.get(toIdex(coor)), emptyCell);
-	}
-
-	/**
-	 * Change type of candies at coordinates to 0 (empty cell)
-	 * 
-	 * @param coorList
-	 */
-	public void crush(ArrayList<Coordinate> coorList) {
-		for (Coordinate coor : coorList) {
-			crush(coor);
-		}
-	}
-
-	/**
-	 * Calculate 1D index from coordinate
-	 * 
-	 * @param coordinate
-	 * @return index in 1D manner
-	 */
-	private int toIdex(Coordinate coordinate) {
-		int row = coordinate.getKey().intValue();
-		int col = coordinate.getValue().intValue();
-		return row * numberOfColumn + col;
-	}
-
-	/**
-	 * Calculate coordinate from 1D index
-	 */
-	private int toRow(int idx) {
-		return idx / numberOfColumn;
-	}
-
-	private int toCol(int idx) {
-		return idx % numberOfColumn;
-	}
-
-	/**
-	 * Transition
-	 */
-	private void flip(ImageView imgView, Image img) {
-		ScaleTransition hideFront = new ScaleTransition(Duration.millis(50), imgView);
+	private Animation getFlipAnimation(ImageView imgView, Image img) {
+		ScaleTransition hideFront = new ScaleTransition(Duration.millis(flipTransitionDuration), imgView);
 		hideFront.setFromX(1);
 		hideFront.setToX(0);
 		hideFront.setInterpolator(Interpolator.EASE_IN);
@@ -195,27 +166,34 @@ public class GameBoard {
 			imgView.setImage(img);
 		});
 
-		ScaleTransition showBack = new ScaleTransition(Duration.millis(50), imgView);
+		ScaleTransition showBack = new ScaleTransition(Duration.millis(flipTransitionDuration), imgView);
 		showBack.setFromX(0);
 		showBack.setToX(1);
 		showBack.setInterpolator(Interpolator.EASE_OUT);
 
-		SequentialTransition sequence = new SequentialTransition(hideFront, showBack);
-		sequence.play();
-
+		return new SequentialTransition(hideFront, showBack);
 	}
 
-	public GridPane getGameBoardPane() {
-		return gameBoardPane;
+	private int toCol(int idx) {
+		return idx % numberOfColumn;
 	}
 
 	/**
-	 * Lolz
+	 * Calculate 1D index from coordinate
+	 * 
+	 * @param coordinate
+	 * @return index in 1D manner
 	 */
-	public void getERekt() {
-		for (ImageView img : imgGrid) {
-			flip(img, Candy.getColorImg(random.nextInt(numberOfCandyType)));
-			// img.setImage(imgList.get(random.nextInt(imgList.size())));
-		}
+	private int toIndex(Coordinate coordinate) {
+		int row = coordinate.getRow();
+		int col = coordinate.getColumn();
+		return row * numberOfColumn + col;
+	}
+
+	/**
+	 * Calculate coordinate from 1D index
+	 */
+	private int toRow(int idx) {
+		return idx / numberOfColumn;
 	}
 }

@@ -19,20 +19,21 @@ public class TimeHandler {
 			}
 		}, initialDelay, updateInterval);
 	}
-	
-	
+
 	/**
 	 * Convert the current time into String
+	 * 
 	 * @return mm:ss
 	 */
 	public String toString() {
-		Integer min = new Integer(timeLeft/60);
-		Integer sec = new Integer(timeLeft%60);
+		Integer min = new Integer(timeLeft / 60);
+		Integer sec = new Integer(timeLeft % 60);
 		return Integer.toString(min) + ":" + Integer.toString(sec);
 	}
 
 	/**
 	 * Is called every updateInterval
+	 * 
 	 * @see updateInterval
 	 */
 	private void timerAction() {

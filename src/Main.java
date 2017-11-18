@@ -8,23 +8,24 @@ public class Main extends Application {
 	String screenTitle = "Candy Crush";
 
 	/** GameBoard properties */
-	private static final int windowWidth = 320;
+	private static final int windowWidth = 500;
 	private static final int numberOfColumn = 10;
-	private static final int numberOfRow = 5;
-	private static final int numberOfCandyType = 15;
+	private static final int numberOfRow = 10;
 
 	/** Timer Properties */
 	private static final int time = 100; // sec
 	private static final int timerUpdateInterval = 1000; // ms
 	private static final int timerInitialDelay = 1000;
 
-	/** Display */
+	/** Gameplay Properties */
+	private static final int numberOfCandyType = 5;
+
+	/** Display Var */
 	private static Stage stage;
 	private static Scene scene;
+	private static Board board;
 	private static GameBoard gameBoard;
 	private static HeaderBoard headerBoard;
-
-	/** Core */
 	private static TimeHandler timeHandler;
 
 	public static void main(String[] args) {
@@ -41,6 +42,10 @@ public class Main extends Application {
 		// Set up timer
 		timeHandler = new TimeHandler(time);
 
+		// Set up Board
+		board = new Board(numberOfRow, numberOfColumn, numberOfCandyType);
+		board.generateBoard();
+
 		// Wrap up and display
 		VBox root = new VBox();
 		root.getChildren().addAll(headerBoard.getHeaderPane(), gameBoard.getGameBoardPane());
@@ -50,6 +55,7 @@ public class Main extends Application {
 		scene = new Scene(root);
 		stage.setScene(scene);
 		stage.show();
+		gameBoard.play();
 	}
 
 	/**
@@ -89,5 +95,17 @@ public class Main extends Application {
 
 	public static int getNumberofcandytype() {
 		return numberOfCandyType;
+	}
+
+	public static Board getBoard() {
+		return board;
+	}
+
+	public static GameBoard getGameBoard() {
+		return gameBoard;
+	}
+
+	public static HeaderBoard getHeaderBoard() {
+		return headerBoard;
 	}
 }
