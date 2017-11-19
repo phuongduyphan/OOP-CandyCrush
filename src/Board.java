@@ -1,21 +1,18 @@
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.TreeSet;
 
 import javafx.util.Pair;
 
 public class Board {
 	private int numberOfRow, numberOfColumn;
-	private int[][] grid;
-	private int numberOfCandyColor;
+	private Candy[][] grid;
 	private int score;
 
 	public Board(int numberOfRow, int numberOfColumn, int numberOfCandyColor) {
 		this.numberOfRow = numberOfRow;
 		this.numberOfColumn = numberOfColumn;
-		this.numberOfCandyColor = numberOfCandyColor;
-		grid = new int[numberOfRow + 1][numberOfColumn + 1];
+		grid = new Candy[numberOfRow + 1][numberOfColumn + 1];
 		score = 0;
 		Main.getHeaderBoard().setScoreValue(score);
 	}
@@ -35,8 +32,8 @@ public class Board {
 		for (int j = 0; j < numberOfColumn; j++) {
 			startRow = -1;
 			for (int i = numberOfRow - 1; i >= 0; i--) {
-				if (grid[i][j] == 0) {
-					startRow = i; // The first Row whose value is 0
+				if (grid[i][j] == null) {
+					startRow = i; // The first Row whose is empty
 					break;
 				}
 			}
@@ -44,7 +41,7 @@ public class Board {
 				continue;
 			curRow = startRow; // holds the lowest position of 0 in a column
 			for (int i = startRow; i >= 0; i--) {
-				if (grid[i][j] != 0) {
+				if (grid[i][j] != null) {
 					coor1 = new Coordinate(i, j);
 					coor2 = new Coordinate(curRow, j);
 					dropLists.get(coor2.getRow()).add(new Pair<Coordinate, Coordinate>(coor1, coor2));
@@ -55,7 +52,7 @@ public class Board {
 		for (int i = numberOfRow - 1; i >= 0; --i) {
 			ArrayList<Pair<Coordinate, Coordinate>> dropList = dropLists.get(i);
 			for (Pair<Coordinate, Coordinate> p : dropList) {
-				int tmp = grid[p.getKey().getRow()][p.getKey().getColumn()];
+				Candy tmp = grid[p.getKey().getRow()][p.getKey().getColumn()];
 				grid[p.getKey().getRow()][p.getKey().getColumn()] = grid[p.getValue().getRow()][p.getValue()
 						.getColumn()];
 				grid[p.getValue().getRow()][p.getValue().getColumn()] = tmp;
@@ -76,8 +73,8 @@ public class Board {
 		boolean haveChange = false;
 		for (int i = numberOfRow - 1; i >= 0; i--) {
 			for (int j = 0; j < numberOfColumn; j++) {
-				if (grid[i][j] == 0) {
-					grid[i][j] = new Random().nextInt(numberOfCandyColor) + 1;
+				if (grid[i][j] == null) {
+					grid[i][j] = Candy.getRandCandy();
 					haveChange = true;
 				}
 			}
@@ -113,12 +110,12 @@ public class Board {
 		// search for sequences and store row/column sequences in hrow/hcol
 		for (int i = 0; i < numberOfRow; i++)
 			for (int j = 0; j < numberOfColumn; j++) {
-				if (j > 0 && grid[i][j] == grid[i][j - 1])
+				if (j > 0 && grid[i][j].getColor() == grid[i][j - 1].getColor())
 					hrow[i][j] = hrow[i][j - 1] + 1;
 				else
 					hrow[i][j] = 1;
 
-				if (i > 0 && grid[i][j] == grid[i - 1][j])
+				if (i > 0 && grid[i][j].getColor() == grid[i - 1][j].getColor())
 					hcol[i][j] = hcol[i - 1][j] + 1;
 				else
 					hcol[i][j] = 1;
@@ -180,7 +177,7 @@ public class Board {
 	 * @see isValid
 	 */
 	private boolean checkInside(int curRow, int curCol) {
-		if (1 <= curRow && curRow <= numberOfRow && 1 <= curCol && curCol <= numberOfColumn)
+		if (0 <= curRow && curRow < numberOfRow && 0 <= curCol && curCol < numberOfColumn)
 			return true;
 		return false;
 	}
@@ -202,14 +199,14 @@ public class Board {
 
 				// Check RHS positions
 				curCol = j + 1;
-				while (checkInside(curRow, curCol) && grid[curRow][curCol] == grid[i][j]) {
+				while (checkInside(curRow, curCol) && grid[curRow][curCol].getColor() == grid[i][j].getColor()) {
 					curCol++;
 					cnt++;
 				}
 
 				// Check LHS positions
 				curCol = j - 1;
-				while (checkInside(curRow, curCol) && grid[curRow][curCol] == grid[i][j]) {
+				while (checkInside(curRow, curCol) && grid[curRow][curCol].getColor() == grid[i][j].getColor()) {
 					curCol--;
 					cnt++;
 				}
@@ -224,13 +221,13 @@ public class Board {
 
 				// Check RHS positions
 				curCol = j + 1;
-				while (checkInside(curRow, curCol) && grid[curRow][curCol] == grid[i][j]) {
+				while (checkInside(curRow, curCol) && grid[curRow][curCol].getColor() == grid[i][j].getColor()) {
 					curCol++;
 					cnt++;
 				}
 				// Check LHS positions
 				curCol = j - 1;
-				while (checkInside(curRow, curCol) && grid[curRow][curCol] == grid[i][j]) {
+				while (checkInside(curRow, curCol) && grid[curRow][curCol].getColor() == grid[i][j].getColor()) {
 					curCol--;
 					cnt++;
 				}
@@ -246,13 +243,13 @@ public class Board {
 
 				// Check upper positions
 				curRow = i - 1;
-				while (checkInside(curRow, curCol) && grid[curRow][curCol] == grid[i][j]) {
+				while (checkInside(curRow, curCol) && grid[curRow][curCol].getColor() == grid[i][j].getColor()) {
 					curRow--;
 					cnt++;
 				}
 				// Check lower positions
 				curRow = i + 1;
-				while (checkInside(curRow, curCol) && grid[curRow][curCol] == grid[i][j]) {
+				while (checkInside(curRow, curCol) && grid[curRow][curCol].getColor() == grid[i][j].getColor()) {
 					curRow++;
 					cnt++;
 				}
@@ -268,13 +265,13 @@ public class Board {
 
 				// Check upper positions
 				curRow = i - 1;
-				while (checkInside(curRow, curCol) && grid[curRow][curCol] == grid[i][j]) {
+				while (checkInside(curRow, curCol) && grid[curRow][curCol].getColor() == grid[i][j].getColor()) {
 					curRow--;
 					cnt++;
 				}
 				// Check lower positions
 				curRow = i + 1;
-				while (checkInside(curRow, curCol) && grid[curRow][curCol] == grid[i][j]) {
+				while (checkInside(curRow, curCol) && grid[curRow][curCol].getColor() == grid[i][j].getColor()) {
 					curRow++;
 					cnt++;
 				}
@@ -294,48 +291,47 @@ public class Board {
 		/** Randomly generate board **/
 		for (int i = 0; i < numberOfRow; i++) {
 			for (int j = 0; j < numberOfColumn; j++) {
-				grid[i][j] = new Random().nextInt(numberOfCandyColor) + 1;
+				grid[i][j] = Candy.getRandCandy();
 			}
 		}
 
 		/** Eliminate sequences **/
 		for (int i = 0; i < numberOfRow; i++) {
-			ArrayList<Coordinate> coorList = new ArrayList<Coordinate>();
-			ArrayList<Integer> typeList = new ArrayList<Integer>();
 			for (int j = 0; j < numberOfColumn; j++) {
 				// CASE 1
 				if ((i >= 2) && (j < 2)) {
-					if ((grid[i - 1][j] == grid[i - 2][j])) {
-						while (grid[i][j] == grid[i - 1][j])
-							grid[i][j] = new Random().nextInt(numberOfCandyColor) + 1;
+					if ((grid[i - 1][j].getColor() == grid[i - 2][j].getColor())) {
+						while (grid[i][j].getColor() == grid[i - 1][j].getColor())
+							grid[i][j] = Candy.getRandCandy();
 					}
 				}
 
 				// CASE 2
 				if ((i < 2) && (j >= 2)) {
-					if ((grid[i][j - 1] == grid[i][j - 2])) {
-						while (grid[i][j] == grid[i][j - 1])
-							grid[i][j] = new Random().nextInt(numberOfCandyColor) + 1;
+					if ((grid[i][j - 1].getColor() == grid[i][j - 2].getColor())) {
+						while (grid[i][j].getColor() == grid[i][j - 1].getColor())
+							grid[i][j] = Candy.getRandCandy();
 					}
 				}
 
 				// CASE 3
 				if ((i >= 2) && (j >= 2)) {
-					if ((grid[i - 1][j] == grid[i - 2][j]) && (grid[i][j - 1] == grid[i][j - 2])) {
-						while ((grid[i][j] == grid[i - 1][j]) || (grid[i][j] == grid[i][j - 1]))
-							grid[i][j] = new Random().nextInt(numberOfCandyColor) + 1;
-					} else if ((grid[i - 1][j] == grid[i - 2][j]) && (grid[i][j - 1] != grid[i][j - 2])) {
-						while (grid[i][j] == grid[i - 1][j])
-							grid[i][j] = new Random().nextInt(numberOfCandyColor) + 1;
-					} else if ((grid[i - 1][j] != grid[i - 2][j]) && (grid[i][j - 1] == grid[i][j - 2])) {
-						while (grid[i][j] == grid[i][j - 1])
-							grid[i][j] = new Random().nextInt(numberOfCandyColor) + 1;
+					if ((grid[i - 1][j].getColor() == grid[i - 2][j].getColor())
+							&& (grid[i][j - 1].getColor() == grid[i][j - 2].getColor())) {
+						while ((grid[i][j].getColor() == grid[i - 1][j].getColor())
+								|| (grid[i][j].getColor() == grid[i][j - 1].getColor()))
+							grid[i][j] = Candy.getRandCandy();
+					} else if ((grid[i - 1][j].getColor() == grid[i - 2][j].getColor())
+							&& (grid[i][j - 1].getColor() != grid[i][j - 2].getColor())) {
+						while (grid[i][j].getColor() == grid[i - 1][j].getColor())
+							grid[i][j] = Candy.getRandCandy();
+					} else if ((grid[i - 1][j].getColor() != grid[i - 2][j].getColor())
+							&& (grid[i][j - 1].getColor() == grid[i][j - 2].getColor())) {
+						while (grid[i][j].getColor() == grid[i][j - 1].getColor())
+							grid[i][j] = Candy.getRandCandy();
 					}
 				}
-				coorList.add(new Coordinate(i, j));
-				typeList.add(new Integer(grid[i][j]));
 			}
-			// Main.getGameBoard().setCandy(coorList, typeList);
 		}
 		System.out.println("genBoard");
 		debugGrid();
@@ -353,7 +349,8 @@ public class Board {
 	 * @see swapCandies
 	 */
 	private void swap(Coordinate candy1, Coordinate candy2) {
-		Integer temp, row1, col1, row2, col2;
+		Integer row1, col1, row2, col2;
+		Candy temp;
 		row1 = candy1.getRow();
 		col1 = candy1.getColumn();
 		row2 = candy2.getRow();
@@ -391,15 +388,32 @@ public class Board {
 	}
 
 	/**
-	 * Set values at coordinates to 0
+	 * Set values at coordinates to 0 and check for special explode
 	 * 
 	 * @param coorList
 	 */
 	private void crush(ArrayList<Coordinate> coorList) {
-		for (Coordinate coor : coorList)
-			grid[coor.getRow()][coor.getColumn()] = 0;
+		for (Coordinate coor : coorList) {
+			crush(coor);
+		}
 		debugGrid();
 		Main.getGameBoard().updateBoard();
+	}
+
+	private void crush(Coordinate coor) {
+		Candy candy = grid[coor.getRow()][coor.getColumn()];
+		if(candy == null) return;
+		grid[coor.getRow()][coor.getColumn()] = null;
+		for (Coordinate coor2 : candy.specialExplode(coor))
+			crush(coor2);
+	}
+	/**
+	 * Set value at coordinate to 0 without checking for special explode
+	 * 
+	 * @param coor
+	 */
+	private void crush1(Coordinate coor) {
+		grid[coor.getRow()][coor.getColumn()] = null;
 	}
 
 	/**
@@ -430,13 +444,16 @@ public class Board {
 	private void debugGrid() {
 		for (int i = 0; i < numberOfRow; ++i) {
 			for (int j = 0; j < numberOfColumn; ++j)
-				System.out.print(grid[i][j] + " ");
+				if (grid[i][j] == null)
+					System.out.print('X' + " ");
+				else
+					System.out.print(grid[i][j].getColor() + " ");
 			System.out.println();
 		}
 		System.out.println();
 	}
 
-	public int[][] getGrid() {
+	public Candy[][] getGrid() {
 		return grid;
 	}
 

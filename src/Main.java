@@ -18,7 +18,7 @@ public class Main extends Application {
 	private static final int timerInitialDelay = 1000;
 
 	/** Gameplay Properties */
-	private static final int numberOfCandyType = 5;
+	private static final int numberOfCandyColor = 5;
 
 	/** Display Var */
 	private static Stage stage;
@@ -35,16 +35,20 @@ public class Main extends Application {
 	public void start(Stage _stage) throws Exception {
 		// Set up Header Board and its controller
 		headerBoard = new HeaderBoard();
+		
+		// Set up Candy
+		Candy.init();
 
 		// Set up Game Board
 		gameBoard = new GameBoard();
 
 		// Set up timer
-		timeHandler = new TimeHandler(time);
+		timeHandler = new TimeHandler(time);		
 
 		// Set up Board
-		board = new Board(numberOfRow, numberOfColumn, numberOfCandyType);
+		board = new Board(numberOfRow, numberOfColumn, numberOfCandyColor);
 		board.generateBoard();
+		
 
 		// Wrap up and display
 		VBox root = new VBox();
@@ -93,8 +97,8 @@ public class Main extends Application {
 		return windowWidth;
 	}
 
-	public static int getNumberofcandytype() {
-		return numberOfCandyType;
+	public static int getNumberofcandycolor() {
+		return numberOfCandyColor;
 	}
 
 	public static Board getBoard() {
