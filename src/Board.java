@@ -92,6 +92,7 @@ public class Board {
 	public void dropNewCandy() {
 		moveCandy();
 		Main.getGameBoard().pause();
+		Main.getGameBoard().pause();
 		fallCandy();
 	}
 
@@ -402,18 +403,11 @@ public class Board {
 
 	private void crush(Coordinate coor) {
 		Candy candy = grid[coor.getRow()][coor.getColumn()];
-		if(candy == null) return;
+		if (candy == null)
+			return;
 		grid[coor.getRow()][coor.getColumn()] = null;
 		for (Coordinate coor2 : candy.specialExplode(coor))
 			crush(coor2);
-	}
-	/**
-	 * Set value at coordinate to 0 without checking for special explode
-	 * 
-	 * @param coor
-	 */
-	private void crush1(Coordinate coor) {
-		grid[coor.getRow()][coor.getColumn()] = null;
 	}
 
 	/**
@@ -427,6 +421,7 @@ public class Board {
 			System.out.println("Combo formed?: " + list.size());
 			if (list.isEmpty() == false) {
 				crush(list);
+				Main.getGameBoard().pause();
 			}
 			dropNewCandy();
 			list = checkSequenceCandy();

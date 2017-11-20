@@ -3,9 +3,9 @@ import java.util.ArrayList;
 import javafx.scene.image.Image;
 
 public class Candy3x3Bomb extends Candy {
-
-	private static final String typeImageDir = "overlay3x3Bomb.png";
-	private static Image typeImage = new Image(typeImageDir);
+	private static final String[] imageDirectory = new String[] { "red-3x3bomb.png", "orange-3x3bomb.png",
+			"yellow-3x3bomb.png", "green-3x3bomb.png", "blue-3x3bomb.png", "purple-3x3bomb.png"};
+	private static ArrayList<Image> imgList = new ArrayList<Image>();
 
 	public Candy3x3Bomb() {
 		super();
@@ -13,11 +13,6 @@ public class Candy3x3Bomb extends Candy {
 
 	public Candy3x3Bomb(int color) {
 		super(color);
-	}
-
-	@Override
-	public Image getTypeImage() {
-		return typeImage;
 	}
 
 	@Override
@@ -34,5 +29,15 @@ public class Candy3x3Bomb extends Candy {
 		if (0 <= curRow && curRow < Main.getNumberofrow() && 0 <= curCol && curCol < Main.getNumberofcolumn())
 			return true;
 		return false;
+	}
+	
+	@Override
+	public String[] getImageDirectory() {
+		return imageDirectory;
+	}
+
+	@Override
+	public ArrayList<Image> getImgList() {
+		return imgList;
 	}
 }

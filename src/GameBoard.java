@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.ListIterator;
 
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
@@ -9,13 +8,16 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
@@ -24,11 +26,14 @@ import javafx.util.Duration;
 public class GameBoard {
 	/** Editable properties */
 	private static final int flipTransitionDuration = 100;
-	private static final String emptyCellDirectory = "0.png";
+	private static final int pauseDuration = 250;
+	private static final String emptyCellDirectory = "empty.png";
+	private static final String cellSelectorDirectory = "cellSelector.png";
 
 	/** Variables */
 	private static Group[][] imgGrid;
 	private static Image emptyCell = new Image(emptyCellDirectory);
+	private static Image cellSelector = new Image(cellSelectorDirectory);
 	private Candy[][] grid;
 	private int windowWidth;
 	private int numberOfColumn;
@@ -45,7 +50,7 @@ public class GameBoard {
 		windowWidth = Main.getWindowwidth();
 		numberOfColumn = Main.getNumberofcolumn();
 		numberOfRow = Main.getNumberofrow();
-		cellWidth = windowWidth / numberOfColumn;
+		cellWidth = (windowWidth * 90 / 100) / numberOfColumn;
 		cellHeight = cellWidth;
 		cellSelectionHandler = new CellSelectionHandler();
 		sequence = new SequentialTransition();
@@ -54,9 +59,13 @@ public class GameBoard {
 		// Load FXML
 		FXMLLoader gameBoardLoader = new FXMLLoader(getClass().getResource("GameBoard.fxml"));
 		gameBoardPane = gameBoardLoader.load();
-		gameBoardPane.setPrefWidth(Main.getWindowwidth());
+//		gameBoardPane.setPrefWidth(Main.getWindowwidth());
 
 		// Init board
+		gameBoardPane.setAlignment(Pos.CENTER);
+		gameBoardPane.setHgap(cellWidth*0.2);
+		gameBoardPane.setVgap(gameBoardPane.getHgap());
+		gameBoardPane.setBackground(new Background(new BackgroundFill(Color.rgb(195, 142, 204, 0.70), new CornerRadii(5), new Insets(0))));
 		imgGrid = new Group[numberOfRow][numberOfColumn];
 		for (int i = 0; i < numberOfRow; ++i) {
 			final int ii = i;
@@ -87,18 +96,14 @@ public class GameBoard {
 	}
 
 	public void pause() {
-		sequence.getChildren().add(new PauseTransition(new Duration(flipTransitionDuration)));
+		sequence.getChildren().add(new PauseTransition(new Duration(pauseDuration)));
 	}
 
 	/**
 	 * Play then reset the sequence
 	 */
 	public void play() {
-//		ListIterator<Animation> list = sequence.getChildren().listIterator();
 		System.out.println("play:");
-//		while (list.hasNext())
-//			System.out.println(list.next());
-//		System.out.println();
 		sequence.play();
 		sequence.getChildren().clear();
 	}
@@ -111,11 +116,11 @@ public class GameBoard {
 				if (grid[i][j] != Main.getBoard().getGrid()[i][j]) {
 					grid[i][j] = Main.getBoard().getGrid()[i][j];
 					Group imgView = imgGrid[i][j];
-					if(grid[i][j] == null)
+					if (grid[i][j] == null)
 						img = new Group(new ImageView(emptyCell));
-					else 
+					else
 						img = grid[i][j].getImage();
-					Animation animation = getFlipAnimation(imgView, img);
+					Animation animation = getFlipAnimation(imgView, img, grid[i][j] == null);
 					transition.getChildren().add(animation);
 				}
 			}
@@ -134,19 +139,23 @@ public class GameBoard {
 		ArrayList<Coordinate> selected = cellSelectionHandler.select(new Coordinate(row, col));
 		if (selected != null) {
 			assert (selected.size() <= 2);
+			ImageView cellSelectorImgV = new ImageView(cellSelector);
+			cellSelectorImgV.setFitHeight(cellHeight);
+			cellSelectorImgV.setFitWidth(cellWidth);
 			for (Coordinate coor : selected)
-				imgGrid[coor.getRow()][coor.getColumn()].setEffect(new InnerShadow(BlurType.ONE_PASS_BOX,
-						Color.rgb(88, 237, 235, 0.5), cellWidth * 0.25, cellWidth * 0.1, 0, 0));
+				imgGrid[coor.getRow()][coor.getColumn()].getChildren().add(cellSelectorImgV);
 			if (selected.size() == 2) {
 				currentSelected = null;
 				for (Coordinate coor : selected)
-					imgGrid[coor.getRow()][coor.getColumn()].setEffect(null);
+					imgGrid[coor.getRow()][coor.getColumn()].getChildren()
+							.remove(imgGrid[coor.getRow()][coor.getColumn()].getChildren().size() - 1);
 				Main.getBoard().swapCandies(selected.get(0), selected.get(1));
 			} else
 				currentSelected = selected.get(0);
 		} else {
 			assert (currentSelected != null);
-			imgGrid[currentSelected.getRow()][currentSelected.getColumn()].setEffect(null);
+			imgGrid[currentSelected.getRow()][currentSelected.getColumn()].getChildren()
+					.remove(imgGrid[currentSelected.getRow()][currentSelected.getColumn()].getChildren().size() - 1);
 			currentSelected = null;
 		}
 	}
@@ -154,10 +163,14 @@ public class GameBoard {
 	/**
 	 * Fundamental Transition
 	 */
-	private Animation getFlipAnimation(Group group, Group neww) {
+	private Animation getFlipAnimation(Group group, Group neww, boolean isShrink) {
 		ScaleTransition hideFront = new ScaleTransition(Duration.millis(flipTransitionDuration), group);
 		hideFront.setFromX(1);
 		hideFront.setToX(0);
+		if(isShrink) {
+			hideFront.setFromY(1);
+			hideFront.setToY(0);
+		}
 		hideFront.setInterpolator(Interpolator.EASE_IN);
 
 		hideFront.setOnFinished(e -> {
@@ -167,11 +180,15 @@ public class GameBoard {
 		ScaleTransition showBack = new ScaleTransition(Duration.millis(flipTransitionDuration), group);
 		showBack.setFromX(0);
 		showBack.setToX(1);
+		if(isShrink) {
+			showBack.setFromY(0);
+			showBack.setToY(1);
+		}
 		showBack.setInterpolator(Interpolator.EASE_OUT);
 
 		return new SequentialTransition(hideFront, showBack);
 	}
-
+	
 	public int getCellWidth() {
 		return cellWidth;
 	}

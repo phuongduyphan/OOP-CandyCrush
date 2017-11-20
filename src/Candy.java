@@ -1,20 +1,16 @@
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 
 import javafx.scene.Group;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public abstract class Candy {
-	private static final String[] colorImageDirectory = new String[] { "red.png", "blue.png",
-			"yellow.png", "cyan.png", "purple.png", "pink.png", "green.png",
-			"Chau.JPG", "Duy.PNG", "Quang.JPG", "red.jpg" };
 	private static int numberOfCandyColor = Main.getNumberofcandycolor();
 	private static Integer maxProba;
-	private static ArrayList<Image> colorImgList = new ArrayList<Image>();
 	private static TreeMap<Integer, Supplier<Candy>> candyTypeProbabilityList;
 
 	private int color;
@@ -41,11 +37,9 @@ public abstract class Candy {
 		candyTypeProbabilityList.put((maxProba += 3), CandyVerticalBomb::new);
 
 		assert (candyTypeProbabilityList.size() >= Main.getNumberofcandycolor());
-		assert (colorImageDirectory.length >= Main.getNumberofcandycolor());
-
-		for (String dir : colorImageDirectory)
-			colorImgList.add(new Image(dir));
-		System.out.println(maxProba);
+		for (Entry<Integer, Supplier<Candy>> entry : candyTypeProbabilityList.entrySet()) {
+			entry.getValue().get().subInit();
+		}
 	}
 
 	/**
@@ -71,21 +65,23 @@ public abstract class Candy {
 	public static Candy getRandCandy() {
 		assert (candyTypeProbabilityList.size() != 0);
 		int type = new Random().nextInt(maxProba);
-		System.out.println(type + " " + candyTypeProbabilityList.ceilingEntry(type).getValue().getClass());
 		Candy candy = candyTypeProbabilityList.ceilingEntry(type).getValue().get();
 		candy.color = new Random().nextInt(numberOfCandyColor);
 		return candy;
 	}
-	
+
 	public Group getImage() {
-		ImageView colorImgV = new ImageView(colorImgList.get(color));
-		ImageView typeImgV = new ImageView(this.getTypeImage());
+		ImageView colorImgV = new ImageView(getImgList().get(color));
 		colorImgV.setFitHeight(Main.getGameBoard().getCellHeight());
 		colorImgV.setFitWidth(Main.getGameBoard().getCellWidth());
-		typeImgV.setFitHeight(Main.getGameBoard().getCellHeight());
-		typeImgV.setFitWidth(Main.getGameBoard().getCellWidth());
-		typeImgV.setBlendMode(BlendMode.SRC_OVER);
-		return new Group(colorImgV, typeImgV);
+		colorImgV.setPreserveRatio(true);
+		return new Group(colorImgV);
+	}
+
+	private void subInit() {
+		for (String str : getImageDirectory()) {
+			getImgList().add(new Image(str));
+		}
 	}
 
 	/**
@@ -97,8 +93,10 @@ public abstract class Candy {
 	 * @return If the candy at the given coordinate is to be exploded
 	 */
 	public abstract ArrayList<Coordinate> specialExplode(Coordinate curCoor);
-	
-	public abstract Image getTypeImage();
+
+	public abstract String[] getImageDirectory();
+
+	public abstract ArrayList<Image> getImgList();
 
 	public int getColor() {
 		return color;

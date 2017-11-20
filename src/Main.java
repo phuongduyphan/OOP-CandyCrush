@@ -8,9 +8,9 @@ public class Main extends Application {
 	String screenTitle = "Candy Crush";
 
 	/** GameBoard properties */
-	private static final int windowWidth = 500;
-	private static final int numberOfColumn = 10;
-	private static final int numberOfRow = 10;
+	private static final int windowWidth = 480;
+	private static final int numberOfColumn = 7;
+	private static final int numberOfRow = 7;
 
 	/** Timer Properties */
 	private static final int time = 100; // sec
