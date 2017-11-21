@@ -16,53 +16,11 @@ public class Board {
 		score = 0;
 		Main.getHeaderBoard().setScoreValue(score);
 	}
-
-	/**
-	 * Shift the candies downward to fill the holes after crushing the candies (for
-	 * using inside DropNewCandy)
-	 * 
-	 * @see dropNewCandy
-	 */
-	private void moveCandy() {
-		ArrayList<ArrayList<Pair<Coordinate, Coordinate>>> dropLists = new ArrayList<ArrayList<Pair<Coordinate, Coordinate>>>();
-		int startRow = 0, curRow = 0;
-		Coordinate coor1, coor2;
-		for (int i = 0; i < Main.getNumberofrow(); ++i)
-			dropLists.add(new ArrayList<Pair<Coordinate, Coordinate>>());
-		for (int j = 0; j < numberOfColumn; j++) {
-			startRow = -1;
-			for (int i = numberOfRow - 1; i >= 0; i--) {
-				if (grid[i][j] == null) {
-					startRow = i; // The first Row whose is empty
-					break;
-				}
-			}
-			if (startRow == -1)
-				continue;
-			curRow = startRow; // holds the lowest position of 0 in a column
-			for (int i = startRow; i >= 0; i--) {
-				if (grid[i][j] != null) {
-					coor1 = new Coordinate(i, j);
-					coor2 = new Coordinate(curRow, j);
-					dropLists.get(coor2.getRow()).add(new Pair<Coordinate, Coordinate>(coor1, coor2));
-					curRow--;
-				}
-			}
-		}
-		for (int i = numberOfRow - 1; i >= 0; --i) {
-			ArrayList<Pair<Coordinate, Coordinate>> dropList = dropLists.get(i);
-			for (Pair<Coordinate, Coordinate> p : dropList) {
-				Candy tmp = grid[p.getKey().getRow()][p.getKey().getColumn()];
-				grid[p.getKey().getRow()][p.getKey().getColumn()] = grid[p.getValue().getRow()][p.getValue()
-						.getColumn()];
-				grid[p.getValue().getRow()][p.getValue().getColumn()] = tmp;
-			}
-			System.out.println("moveCandy");
-			debugGrid();
-			Main.getGameBoard().updateBoard();
-		}
-	}
 	
+	/**
+	 * Check whether the grid is full of candies
+	 * @return
+	 */
 	private boolean checkFullCandy() {
 		for (int i= 0; i< numberOfRow; i++) {
 			for (int j=0; j < numberOfColumn; j++) {
@@ -71,16 +29,12 @@ public class Board {
 		}
 		return true;
 	}
-
-	/**
-	 * Generate new random candies to fill the holes after shifting candies
-	 * downwards (for using inside dropNewCandy)
-	 * 
-	 * @see dropNewCandy
-	 */
 	
-	private void fallCandy() {
-		boolean haveChange = false;
+	/**
+	 * Update positions of candies after a valid swap
+	 */
+	public void dropNewCandy() {		
+		boolean checkTopCandy;
 		while (!checkFullCandy()) {
 			for (int j = 0; j <= numberOfColumn; j++) {
 				if (j == numberOfColumn) {
@@ -89,24 +43,23 @@ public class Board {
 					Main.getGameBoard().updateBoard();
 					continue;
 				}
+				checkTopCandy = false;
 				for (int i=numberOfRow-1; i>=0; i--) {
 					if (grid[i][j] == null) {
-						grid[i][j] = Candy.getRandCandy();
+						for (int k = i-1; k>=0; k--) {
+							if (grid[k][j] != null) {
+								grid[i][j] = grid[k][j];
+								grid[k][j] = null;
+								checkTopCandy = true;
+								break;
+							}
+						}
+						if (!checkTopCandy) grid[i][j] = Candy.getRandCandy();
 						break;
 					}	
 				}
 			}
 		}
-	}
-
-	/**
-	 * Update positions of candies after a valid swap
-	 */
-	public void dropNewCandy() {
-		moveCandy();
-		Main.getGameBoard().pause();
-		Main.getGameBoard().pause();
-		fallCandy();
 	}
 
 	/**
