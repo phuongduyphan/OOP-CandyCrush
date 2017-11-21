@@ -62,6 +62,15 @@ public class Board {
 			Main.getGameBoard().updateBoard();
 		}
 	}
+	
+	private boolean checkFullCandy() {
+		for (int i= 0; i< numberOfRow; i++) {
+			for (int j=0; j < numberOfColumn; j++) {
+				if (grid[i][j] == null) return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Generate new random candies to fill the holes after shifting candies
@@ -69,19 +78,23 @@ public class Board {
 	 * 
 	 * @see dropNewCandy
 	 */
+	
 	private void fallCandy() {
 		boolean haveChange = false;
-		for (int i = numberOfRow - 1; i >= 0; i--) {
-			for (int j = 0; j < numberOfColumn; j++) {
-				if (grid[i][j] == null) {
-					grid[i][j] = Candy.getRandCandy();
-					haveChange = true;
+		while (!checkFullCandy()) {
+			for (int j = 0; j <= numberOfColumn; j++) {
+				if (j == numberOfColumn) {
+					System.out.println("fallCandy");
+					debugGrid();
+					Main.getGameBoard().updateBoard();
+					continue;
 				}
-			}
-			if (haveChange) {
-				System.out.println("fallCandy");
-				debugGrid();
-				Main.getGameBoard().updateBoard();
+				for (int i=numberOfRow-1; i>=0; i--) {
+					if (grid[i][j] == null) {
+						grid[i][j] = Candy.getRandCandy();
+						break;
+					}	
+				}
 			}
 		}
 	}

@@ -25,8 +25,8 @@ import javafx.util.Duration;
 
 public class GameBoard {
 	/** Editable properties */
-	private static final int flipTransitionDuration = 100;
-	private static final int pauseDuration = 250;
+	private static final int flipTransitionDuration = 150;
+	private static final int pauseDuration = 50;
 	private static final String emptyCellDirectory = "empty.png";
 	private static final String cellSelectorDirectory = "cellSelector.png";
 

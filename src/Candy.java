@@ -33,8 +33,8 @@ public abstract class Candy {
 		maxProba = 0;
 		candyTypeProbabilityList = new TreeMap<Integer, Supplier<Candy>>();
 		candyTypeProbabilityList.put((maxProba += 100), CandyNormal::new);
-		candyTypeProbabilityList.put((maxProba += 3), Candy3x3Bomb::new);
-		candyTypeProbabilityList.put((maxProba += 3), CandyVerticalBomb::new);
+		candyTypeProbabilityList.put((maxProba += 10), Candy3x3Bomb::new);
+		candyTypeProbabilityList.put((maxProba += 10), CandyVerticalBomb::new);
 
 		assert (candyTypeProbabilityList.size() >= Main.getNumberofcandycolor());
 		for (Entry<Integer, Supplier<Candy>> entry : candyTypeProbabilityList.entrySet()) {
