@@ -104,21 +104,41 @@ public class Board {
 		System.out.println("/***************************/");
 
 		// add candies in sequences coordinates to TreeSet
+		int specialPos = 0;
+		boolean[][] visitRowSeq = new boolean[numberOfRow + 5][numberOfColumn + 5],
+					visitColSeq = new boolean[numberOfRow + 5][numberOfColumn + 5];
+		
 		for (int i = numberOfRow - 1; i >= 0; i--)
 			for (int j = numberOfColumn - 1; j >= 0; j--) {
-				if (hrow[i][j] >= 3) {
+				if (!visitRowSeq[i][j] && hrow[i][j] >= 3) {
+					specialPos = -1;
+					if (hrow[i][j] >= 4) {
+						specialPos = ((j - hrow[i][j] + 1) + j)/2;
+						grid[i][specialPos] = new Candy3x3Bomb(grid[i][j].getColor());
+					}
 					for (int p = 0; p < hrow[i][j]; p++) {
-						coor = new Coordinate(i, j - p);
-						SetList.add(coor);
+						visitRowSeq[i][j-p] = true; 
+						if (j-p != specialPos) {
+							coor = new Coordinate(i, j - p);
+							SetList.add(coor);
+						}
 					}
 				}
 
-				if (hcol[i][j] >= 3)
-					for (int p = 0; p < hcol[i][j]; p++) {
-						coor = new Coordinate(i - p, j);
-						SetList.add(coor);
-
+				if (!visitColSeq[i][j] && hcol[i][j] >= 3) {
+					specialPos = -1;
+					if (hcol[i][j] >= 4) {
+						specialPos = ((i - hcol[i][j] + 1) + i)/2;
+						grid[specialPos][j] = new Candy3x3Bomb(grid[i][j].getColor());
 					}
+					for (int p = 0; p < hcol[i][j]; p++) {
+						visitColSeq[i-p][j] = true;
+						if (i-p != specialPos) {
+							coor = new Coordinate(i - p, j);
+							SetList.add(coor);
+						}
+					}
+				}
 			}
 
 		// append the coordinates to a list
