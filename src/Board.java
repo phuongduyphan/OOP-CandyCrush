@@ -112,10 +112,15 @@ public class Board {
 			for (int j = numberOfColumn - 1; j >= 0; j--) {
 				if (!visitRowSeq[i][j] && hrow[i][j] >= 3) {
 					specialPos = -1;
+					
 					if (hrow[i][j] >= 4) {
 						specialPos = ((j - hrow[i][j] + 1) + j)/2;
-						grid[i][specialPos] = new Candy3x3Bomb(grid[i][j].getColor());
+						if (grid[i][specialPos] instanceof CandyNormal) {
+							grid[i][specialPos] = new Candy3x3Bomb(grid[i][j].getColor());
+						}
+						else specialPos = -1;
 					}
+					
 					for (int p = 0; p < hrow[i][j]; p++) {
 						visitRowSeq[i][j-p] = true; 
 						if (j-p != specialPos) {
@@ -127,10 +132,15 @@ public class Board {
 
 				if (!visitColSeq[i][j] && hcol[i][j] >= 3) {
 					specialPos = -1;
+			
 					if (hcol[i][j] >= 4) {
 						specialPos = ((i - hcol[i][j] + 1) + i)/2;
-						grid[specialPos][j] = new Candy3x3Bomb(grid[i][j].getColor());
+						if (grid[specialPos][j] instanceof CandyNormal) {
+							grid[specialPos][j] = new Candy3x3Bomb(grid[i][j].getColor());
+						}
+						else specialPos = -1;
 					}
+					
 					for (int p = 0; p < hcol[i][j]; p++) {
 						visitColSeq[i-p][j] = true;
 						if (i-p != specialPos) {
@@ -140,7 +150,7 @@ public class Board {
 					}
 				}
 			}
-
+		System.out.println(SetList.toString());
 		// append the coordinates to a list
 		Iterator<Coordinate> it = SetList.iterator();
 		while (it.hasNext()) {
@@ -365,7 +375,7 @@ public class Board {
 		swap(candy1, candy2);
 		ArrayList<Coordinate> list = checkSequenceCandy();
 		if (list.isEmpty() == false) {
-			updateBoard();
+			updateBoard(list);
 		} else {
 			swap(candy1, candy2);
 		}
@@ -400,8 +410,8 @@ public class Board {
 	 * Update the positions of candies until there is no sequence left. If the
 	 * player is out of move, generate new board
 	 */
-	public void updateBoard() {
-		ArrayList<Coordinate> list = checkSequenceCandy();
+	public void updateBoard(ArrayList<Coordinate> curList) {
+		ArrayList<Coordinate> list = curList;
 		do {
 			updateScore(list.size());
 			System.out.println("Combo formed?: " + list.size());
