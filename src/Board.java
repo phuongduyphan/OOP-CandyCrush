@@ -17,6 +17,20 @@ public class Board {
 		Main.getHeaderBoard().setScoreValue(score);
 	}
 	
+	public void setCandy(Coordinate coor, Candy candy) {
+		int i = coor.getRow();
+		int j = coor.getColumn();
+		
+		grid[i][j] = candy;
+	}
+	
+	public Candy getCandy(Coordinate coor) {
+		int i = coor.getRow();
+		int j = coor.getColumn();
+		
+		return grid[i][j];
+	}
+	
 	/**
 	 * Check whether the grid is full of candies
 	 * @return
@@ -56,7 +70,7 @@ public class Board {
 						}
 						if (!checkTopCandy) grid[i][j] = Candy.getRandCandy();
 						break;
-					}	
+					}
 				}
 			}
 		}
@@ -397,7 +411,7 @@ public class Board {
 		Main.getGameBoard().updateBoard();
 	}
 
-	private void crush(Coordinate coor) {
+	public void crush(Coordinate coor) {
 		Candy candy = grid[coor.getRow()][coor.getColumn()];
 		if (candy == null)
 			return;
