@@ -35,6 +35,7 @@ public abstract class Candy {
 		candyTypeProbabilityList.put((maxProba += 100), CandyNormal::new);
 		candyTypeProbabilityList.put((maxProba += 4), Candy3x3Bomb::new);
 		candyTypeProbabilityList.put((maxProba += 4), CandyVerticalBomb::new);
+		candyTypeProbabilityList.put((maxProba += 4), CandyHorizontalBomb::new);
 
 		assert (candyTypeProbabilityList.size() >= Main.getNumberofcandycolor());
 		for (Entry<Integer, Supplier<Candy>> entry : candyTypeProbabilityList.entrySet()) {
