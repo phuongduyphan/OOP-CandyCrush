@@ -2,6 +2,7 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 public class HeaderBoard {
@@ -9,6 +10,10 @@ public class HeaderBoard {
 	private Label timeValue;
 	@FXML
 	private Label scoreValue;
+	@FXML
+	private ImageView butt1;
+	@FXML
+	private ImageView butt2;
 	private Pane headerPane;
 
 	public HeaderBoard() throws IOException {
@@ -17,6 +22,22 @@ public class HeaderBoard {
 		headerPane = headerBoardLoader.load();
 		headerPane.setPrefWidth(Main.getWindowwidth());
 		headerPane.setPrefHeight(100);
+		butt1.setOnMouseClicked(e -> {
+			butt1Action();
+		});
+		butt2.setOnMouseClicked(e -> {
+			butt2Action();
+		});
+	}
+	
+	private void butt1Action() {
+		///Code here ...
+		System.out.println("BUTT");
+	}
+	
+	private void butt2Action() {
+		///Code here ...
+		System.out.println("BUTTTWO");
 	}
 
 	public void setTimeValue(String str) {
