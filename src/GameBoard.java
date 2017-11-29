@@ -8,19 +8,16 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class GameBoard {
@@ -35,7 +32,6 @@ public class GameBoard {
 	private static Image emptyCell = new Image(emptyCellDirectory);
 	private static Image cellSelector = new Image(cellSelectorDirectory);
 	private Candy[][] grid;
-	private int windowWidth;
 	private int numberOfColumn;
 	private int numberOfRow;
 	private int cellWidth;
@@ -47,10 +43,9 @@ public class GameBoard {
 
 	public GameBoard() throws Exception {
 		// Init var
-		windowWidth = Main.getWindowwidth();
 		numberOfColumn = Main.getNumberofcolumn();
 		numberOfRow = Main.getNumberofrow();
-		cellWidth = (windowWidth * 90 / 100) / numberOfColumn;
+		cellWidth = (562 * 80 / 100) / numberOfColumn;
 		cellHeight = cellWidth;
 		cellSelectionHandler = new CellSelectionHandler();
 		sequence = new SequentialTransition();
@@ -59,18 +54,21 @@ public class GameBoard {
 		// Load FXML
 		FXMLLoader gameBoardLoader = new FXMLLoader(getClass().getResource("GameBoard.fxml"));
 		gameBoardPane = gameBoardLoader.load();
-//		gameBoardPane.setPrefWidth(Main.getWindowwidth());
+		gameBoardPane.setPrefWidth(562);
+		gameBoardPane.setPrefHeight(750);
 
 		// Init board
 		gameBoardPane.setAlignment(Pos.CENTER);
-		gameBoardPane.setHgap(cellWidth*0.2);
+		gameBoardPane.setHgap(cellWidth * 0.2);
 		gameBoardPane.setVgap(gameBoardPane.getHgap());
-		gameBoardPane.setBackground(new Background(new BackgroundFill(Color.rgb(195, 142, 204, 0.70), new CornerRadii(5), new Insets(0))));
+		gameBoardPane.setBackground(
+				new Background(new BackgroundImage(new Image("background.png"), null, null, null, null)));
 		imgGrid = new Group[numberOfRow][numberOfColumn];
+		for (int j = 0; j < numberOfColumn; ++j)
+			gameBoardPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
 		for (int i = 0; i < numberOfRow; ++i) {
 			final int ii = i;
 			gameBoardPane.getRowConstraints().add(new RowConstraints(cellHeight));
-			gameBoardPane.getColumnConstraints().add(new ColumnConstraints(cellWidth));
 			for (int j = 0; j < numberOfColumn; ++j) {
 				final int jj = j;
 				ImageView imgV = new ImageView(emptyCell);
@@ -89,43 +87,6 @@ public class GameBoard {
 			}
 		}
 		grid = new Candy[numberOfRow][numberOfColumn];
-	}
-
-	public GridPane getGameBoardPane() {
-		return gameBoardPane;
-	}
-
-	public void pause() {
-		sequence.getChildren().add(new PauseTransition(new Duration(pauseDuration)));
-	}
-
-	/**
-	 * Play then reset the sequence
-	 */
-	public void play() {
-		System.out.println("play:");
-		sequence.play();
-		sequence.getChildren().clear();
-	}
-
-	public void updateBoard() {
-		ParallelTransition transition = new ParallelTransition();
-		Group img;
-		for (int i = numberOfRow - 1; i >= 0; --i) {
-			for (int j = numberOfColumn - 1; j >= 0; --j) {
-				if (grid[i][j] != Main.getBoard().getGrid()[i][j]) {
-					grid[i][j] = Main.getBoard().getGrid()[i][j];
-					Group imgView = imgGrid[i][j];
-					if (grid[i][j] == null)
-						img = new Group(new ImageView(emptyCell));
-					else
-						img = grid[i][j].getImage();
-					Animation animation = getFlipAnimation(imgView, img, grid[i][j] == null);
-					transition.getChildren().add(animation);
-				}
-			}
-		}
-		sequence.getChildren().add(transition);
 	}
 
 	/**
@@ -160,6 +121,14 @@ public class GameBoard {
 		}
 	}
 
+	public int getCellHeight() {
+		return cellHeight;
+	}
+
+	public int getCellWidth() {
+		return cellWidth;
+	}
+
 	/**
 	 * Fundamental Transition
 	 */
@@ -167,7 +136,7 @@ public class GameBoard {
 		ScaleTransition hideFront = new ScaleTransition(Duration.millis(flipTransitionDuration), group);
 		hideFront.setFromX(1);
 		hideFront.setToX(0);
-		if(isShrink) {
+		if (isShrink) {
 			hideFront.setFromY(1);
 			hideFront.setToY(0);
 		}
@@ -180,7 +149,7 @@ public class GameBoard {
 		ScaleTransition showBack = new ScaleTransition(Duration.millis(flipTransitionDuration), group);
 		showBack.setFromX(0);
 		showBack.setToX(1);
-		if(isShrink) {
+		if (isShrink) {
 			showBack.setFromY(0);
 			showBack.setToY(1);
 		}
@@ -188,12 +157,44 @@ public class GameBoard {
 
 		return new SequentialTransition(hideFront, showBack);
 	}
-	
-	public int getCellWidth() {
-		return cellWidth;
+
+	public GridPane getGameBoardPane() {
+		return gameBoardPane;
 	}
 
-	public int getCellHeight() {
-		return cellHeight;
+	public void pause() {
+		sequence.getChildren().add(new PauseTransition(new Duration(pauseDuration)));
+	}
+
+	/**
+	 * Play then reset the sequence
+	 */
+	public void play() {
+		System.out.println("play:");
+		sequence.play();
+		sequence.getChildren().clear();
+	}
+
+	/**
+	 * Compare and update the display to fit the data
+	 */
+	public void updateBoard() {
+		ParallelTransition transition = new ParallelTransition();
+		Group img;
+		for (int i = numberOfRow - 1; i >= 0; --i) {
+			for (int j = numberOfColumn - 1; j >= 0; --j) {
+				if (grid[i][j] != Main.getBoard().getGrid()[i][j]) {
+					grid[i][j] = Main.getBoard().getGrid()[i][j];
+					Group imgView = imgGrid[i][j];
+					if (grid[i][j] == null)
+						img = new Group(new ImageView(emptyCell));
+					else
+						img = grid[i][j].getImage();
+					Animation animation = getFlipAnimation(imgView, img, grid[i][j] == null);
+					transition.getChildren().add(animation);
+				}
+			}
+		}
+		sequence.getChildren().add(transition);
 	}
 }

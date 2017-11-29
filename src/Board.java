@@ -2,8 +2,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-import javafx.util.Pair;
-
 public class Board {
 	private int numberOfRow, numberOfColumn;
 	private Candy[][] grid;
@@ -31,35 +29,21 @@ public class Board {
 	}
 	
 	/**
-	 * Update positions of candies after a valid swap
+	 * Check if a given coordinate is within the board range (for using inside
+	 * isValid function)
+	 * 
+	 * @param curRow
+	 *            row position
+	 * @param curCol
+	 *            column position
+	 * @return <b>true</b> if the coordinate is within range
+	 * 
+	 * @see isValid
 	 */
-	public void dropNewCandy() {		
-		boolean checkTopCandy;
-		while (!checkFullCandy()) {
-			for (int j = 0; j <= numberOfColumn; j++) {
-				if (j == numberOfColumn) {
-					System.out.println("fallCandy");
-					debugGrid();
-					Main.getGameBoard().updateBoard();
-					continue;
-				}
-				checkTopCandy = false;
-				for (int i=numberOfRow-1; i>=0; i--) {
-					if (grid[i][j] == null) {
-						for (int k = i-1; k>=0; k--) {
-							if (grid[k][j] != null) {
-								grid[i][j] = grid[k][j];
-								grid[k][j] = null;
-								checkTopCandy = true;
-								break;
-							}
-						}
-						if (!checkTopCandy) grid[i][j] = Candy.getRandCandy();
-						break;
-					}	
-				}
-			}
-		}
+	private boolean checkInside(int curRow, int curCol) {
+		if (0 <= curRow && curRow < numberOfRow && 0 <= curCol && curCol < numberOfColumn)
+			return true;
+		return false;
 	}
 
 	/**
@@ -162,21 +146,127 @@ public class Board {
 	}
 
 	/**
-	 * Check if a given coordinate is within the board range (for using inside
-	 * isValid function)
+	 * Set values at coordinates to 0 and check for special explode
 	 * 
-	 * @param curRow
-	 *            row position
-	 * @param curCol
-	 *            column position
-	 * @return <b>true</b> if the coordinate is within range
-	 * 
-	 * @see isValid
+	 * @param coorList
 	 */
-	private boolean checkInside(int curRow, int curCol) {
-		if (0 <= curRow && curRow < numberOfRow && 0 <= curCol && curCol < numberOfColumn)
-			return true;
-		return false;
+	private void crush(ArrayList<Coordinate> coorList) {
+		for (Coordinate coor : coorList) {
+			crush(coor);
+		}
+		debugGrid();
+		Main.getGameBoard().updateBoard();
+	}
+
+	private void crush(Coordinate coor) {
+		Candy candy = grid[coor.getRow()][coor.getColumn()];
+		if (candy == null)
+			return;
+		grid[coor.getRow()][coor.getColumn()] = null;
+		for (Coordinate coor2 : candy.specialExplode(coor))
+			crush(coor2);
+	}
+
+	private void debugGrid() {
+		for (int i = 0; i < numberOfRow; ++i) {
+			for (int j = 0; j < numberOfColumn; ++j)
+				if (grid[i][j] == null)
+					System.out.print('X' + " ");
+				else
+					System.out.print(grid[i][j].getColor() + " ");
+			System.out.println();
+		}
+		System.out.println();
+	}
+
+	/**
+	 * Update positions of candies after a valid swap
+	 */
+	public void dropNewCandy() {		
+		boolean checkTopCandy;
+		while (!checkFullCandy()) {
+			for (int j = 0; j <= numberOfColumn; j++) {
+				if (j == numberOfColumn) {
+					System.out.println("fallCandy");
+					debugGrid();
+					Main.getGameBoard().updateBoard();
+					continue;
+				}
+				checkTopCandy = false;
+				for (int i=numberOfRow-1; i>=0; i--) {
+					if (grid[i][j] == null) {
+						for (int k = i-1; k>=0; k--) {
+							if (grid[k][j] != null) {
+								grid[i][j] = grid[k][j];
+								grid[k][j] = null;
+								checkTopCandy = true;
+								break;
+							}
+						}
+						if (!checkTopCandy) grid[i][j] = Candy.getRandCandy();
+						break;
+					}	
+				}
+			}
+		}
+	}
+
+	/**
+	 * Create board with random candies and modify to avoid sequences if necessary
+	 */
+	public void generateBoard() {
+		/** Randomly generate board **/
+		for (int i = 0; i < numberOfRow; i++) {
+			for (int j = 0; j < numberOfColumn; j++) {
+				grid[i][j] = Candy.getRandCandy();
+			}
+		}
+
+		/** Eliminate sequences **/
+		for (int i = 0; i < numberOfRow; i++) {
+			for (int j = 0; j < numberOfColumn; j++) {
+				// CASE 1
+				if ((i >= 2) && (j < 2)) {
+					if ((grid[i - 1][j].getColor() == grid[i - 2][j].getColor())) {
+						while (grid[i][j].getColor() == grid[i - 1][j].getColor())
+							grid[i][j] = Candy.getRandCandy();
+					}
+				}
+
+				// CASE 2
+				if ((i < 2) && (j >= 2)) {
+					if ((grid[i][j - 1].getColor() == grid[i][j - 2].getColor())) {
+						while (grid[i][j].getColor() == grid[i][j - 1].getColor())
+							grid[i][j] = Candy.getRandCandy();
+					}
+				}
+
+				// CASE 3
+				if ((i >= 2) && (j >= 2)) {
+					if ((grid[i - 1][j].getColor() == grid[i - 2][j].getColor())
+							&& (grid[i][j - 1].getColor() == grid[i][j - 2].getColor())) {
+						while ((grid[i][j].getColor() == grid[i - 1][j].getColor())
+								|| (grid[i][j].getColor() == grid[i][j - 1].getColor()))
+							grid[i][j] = Candy.getRandCandy();
+					} else if ((grid[i - 1][j].getColor() == grid[i - 2][j].getColor())
+							&& (grid[i][j - 1].getColor() != grid[i][j - 2].getColor())) {
+						while (grid[i][j].getColor() == grid[i - 1][j].getColor())
+							grid[i][j] = Candy.getRandCandy();
+					} else if ((grid[i - 1][j].getColor() != grid[i - 2][j].getColor())
+							&& (grid[i][j - 1].getColor() == grid[i][j - 2].getColor())) {
+						while (grid[i][j].getColor() == grid[i][j - 1].getColor())
+							grid[i][j] = Candy.getRandCandy();
+					}
+				}
+			}
+		}
+		System.out.println("genBoard");
+		debugGrid();
+		Main.getGameBoard().updateBoard();
+	}
+
+	public Candy[][] getGrid() {
+		return grid;
 	}
 
 	/**
@@ -282,60 +372,6 @@ public class Board {
 	}
 
 	/**
-	 * Create board with random candies and modify to avoid sequences if necessary
-	 */
-	public void generateBoard() {
-		/** Randomly generate board **/
-		for (int i = 0; i < numberOfRow; i++) {
-			for (int j = 0; j < numberOfColumn; j++) {
-				grid[i][j] = Candy.getRandCandy();
-			}
-		}
-
-		/** Eliminate sequences **/
-		for (int i = 0; i < numberOfRow; i++) {
-			for (int j = 0; j < numberOfColumn; j++) {
-				// CASE 1
-				if ((i >= 2) && (j < 2)) {
-					if ((grid[i - 1][j].getColor() == grid[i - 2][j].getColor())) {
-						while (grid[i][j].getColor() == grid[i - 1][j].getColor())
-							grid[i][j] = Candy.getRandCandy();
-					}
-				}
-
-				// CASE 2
-				if ((i < 2) && (j >= 2)) {
-					if ((grid[i][j - 1].getColor() == grid[i][j - 2].getColor())) {
-						while (grid[i][j].getColor() == grid[i][j - 1].getColor())
-							grid[i][j] = Candy.getRandCandy();
-					}
-				}
-
-				// CASE 3
-				if ((i >= 2) && (j >= 2)) {
-					if ((grid[i - 1][j].getColor() == grid[i - 2][j].getColor())
-							&& (grid[i][j - 1].getColor() == grid[i][j - 2].getColor())) {
-						while ((grid[i][j].getColor() == grid[i - 1][j].getColor())
-								|| (grid[i][j].getColor() == grid[i][j - 1].getColor()))
-							grid[i][j] = Candy.getRandCandy();
-					} else if ((grid[i - 1][j].getColor() == grid[i - 2][j].getColor())
-							&& (grid[i][j - 1].getColor() != grid[i][j - 2].getColor())) {
-						while (grid[i][j].getColor() == grid[i - 1][j].getColor())
-							grid[i][j] = Candy.getRandCandy();
-					} else if ((grid[i - 1][j].getColor() != grid[i - 2][j].getColor())
-							&& (grid[i][j - 1].getColor() == grid[i][j - 2].getColor())) {
-						while (grid[i][j].getColor() == grid[i][j - 1].getColor())
-							grid[i][j] = Candy.getRandCandy();
-					}
-				}
-			}
-		}
-		System.out.println("genBoard");
-		debugGrid();
-		Main.getGameBoard().updateBoard();
-	}
-
-	/**
 	 * Exchange the positions of two candies (for using inside swapCandies)
 	 * 
 	 * @param candy1
@@ -385,28 +421,6 @@ public class Board {
 	}
 
 	/**
-	 * Set values at coordinates to 0 and check for special explode
-	 * 
-	 * @param coorList
-	 */
-	private void crush(ArrayList<Coordinate> coorList) {
-		for (Coordinate coor : coorList) {
-			crush(coor);
-		}
-		debugGrid();
-		Main.getGameBoard().updateBoard();
-	}
-
-	private void crush(Coordinate coor) {
-		Candy candy = grid[coor.getRow()][coor.getColumn()];
-		if (candy == null)
-			return;
-		grid[coor.getRow()][coor.getColumn()] = null;
-		for (Coordinate coor2 : candy.specialExplode(coor))
-			crush(coor2);
-	}
-
-	/**
 	 * Update the positions of candies until there is no sequence left. If the
 	 * player is out of move, generate new board
 	 */
@@ -430,22 +444,6 @@ public class Board {
 
 	private void updateScore(int s) {
 		score += s;
-	}
-
-	private void debugGrid() {
-		for (int i = 0; i < numberOfRow; ++i) {
-			for (int j = 0; j < numberOfColumn; ++j)
-				if (grid[i][j] == null)
-					System.out.print('X' + " ");
-				else
-					System.out.print(grid[i][j].getColor() + " ");
-			System.out.println();
-		}
-		System.out.println();
-	}
-
-	public Candy[][] getGrid() {
-		return grid;
 	}
 
 }

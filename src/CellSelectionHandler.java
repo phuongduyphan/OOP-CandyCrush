@@ -11,6 +11,10 @@ public class CellSelectionHandler {
 		return selected;
 	}
 
+	private void reset() {
+		selected = null;
+	}
+
 	/**
 	 * Perform a selection action. If no cell is currently selected, select the
 	 * given one. If the given cell is adjacent to the previous selected cells,
@@ -40,9 +44,5 @@ public class CellSelectionHandler {
 			reset();
 			return null;
 		}
-	}
-
-	private void reset() {
-		selected = null;
 	}
 }

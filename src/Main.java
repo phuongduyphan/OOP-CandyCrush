@@ -1,61 +1,91 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 	/** Windows Properties */
-	String screenTitle = "Candy Crush";
+	private static final String screenTitle = "Candy Crush";
 
 	/** GameBoard properties */
-	private static final int windowWidth = 480;
-	private static final int numberOfColumn = 7;
-	private static final int numberOfRow = 7;
+	private static final int numberOfColumn[] = { 5, 6, 8, 15 };
 
+	private static final int numberOfRow[] = { 7, 8, 11, 20 };
 	/** Timer Properties */
 	private static final int time = 100; // sec
+
 	private static final int timerUpdateInterval = 1000; // ms
 	private static final int timerInitialDelay = 1000;
-
 	/** Gameplay Properties */
-	private static final int numberOfCandyColor = 5;
+	private static final int numberOfCandyColor = 6;
 
 	/** Display Var */
 	private static Stage stage;
+
 	private static Scene scene;
 	private static Board board;
+	private static MainMenu mainMenu;
 	private static GameBoard gameBoard;
 	private static HeaderBoard headerBoard;
 	private static TimeHandler timeHandler;
+	private static int diff = 0;
 
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	public void start(Stage _stage) throws Exception {
-		// Set up Header Board and its controller
-		headerBoard = new HeaderBoard();
-		
 		// Set up Candy
 		Candy.init();
 
-		// Set up Game Board
-		gameBoard = new GameBoard();
+		// Set up menu
+		mainMenu = new MainMenu();
 
-		// Set up timer
-		timeHandler = new TimeHandler(time);		
+		// Wrap up and display
+		stage = _stage;
+		stage.setTitle(screenTitle);
+		stage.setResizable(false);
+		Pane root = mainMenu.getMainMenuPane();
+		scene = new Scene(root);
+		stage.setScene(scene);
+		stage.show();
+
+	}
+
+	/**
+	 * Change the scene when hit play button Init the size according to the
+	 * difficulty
+	 * 
+	 * @param _diff
+	 *            difficulty
+	 */
+	public static void playButton(int _diff) {
+		diff = _diff;
+		// Set up Header Board and its controller
+		try {
+			headerBoard = new HeaderBoard();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// Set up Game Board
+		try {
+			gameBoard = new GameBoard();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		// Set up Board
-		board = new Board(numberOfRow, numberOfColumn, numberOfCandyColor);
+		board = new Board(numberOfRow[diff], numberOfColumn[diff], numberOfCandyColor);
 		board.generateBoard();
-		
+
+		// Set up timer
+		timeHandler = new TimeHandler(time);
 
 		// Wrap up and display
 		VBox root = new VBox();
 		root.getChildren().addAll(headerBoard.getHeaderPane(), gameBoard.getGameBoardPane());
-		stage = _stage;
-		stage.setTitle(screenTitle);
-		stage.setResizable(false);
 		scene = new Scene(root);
 		stage.setScene(scene);
 		stage.show();
@@ -69,36 +99,13 @@ public class Main extends Application {
 	 */
 	public static void timerAction() {
 		headerBoard.setTimeValue(timeHandler.toString());
-		// gameBoard.getERekt();
 	}
 
-	// To be executed when the Time Handler runs out
+	/**
+	 * To be executed when the Time Handler runs out
+	 */
 	public static void timerEndAction() {
 		System.out.println("ENDGAME");
-	}
-
-	public static int getTimerupdateinterval() {
-		return timerUpdateInterval;
-	}
-
-	public static int getTimerinitialdelay() {
-		return timerInitialDelay;
-	}
-
-	public static int getNumberofcolumn() {
-		return numberOfColumn;
-	}
-
-	public static int getNumberofrow() {
-		return numberOfRow;
-	}
-
-	public static int getWindowwidth() {
-		return windowWidth;
-	}
-
-	public static int getNumberofcandycolor() {
-		return numberOfCandyColor;
 	}
 
 	public static Board getBoard() {
@@ -111,5 +118,25 @@ public class Main extends Application {
 
 	public static HeaderBoard getHeaderBoard() {
 		return headerBoard;
+	}
+
+	public static int getNumberofcandycolor() {
+		return numberOfCandyColor;
+	}
+
+	public static int getNumberofcolumn() {
+		return numberOfColumn[diff];
+	}
+
+	public static int getNumberofrow() {
+		return numberOfRow[diff];
+	}
+
+	public static int getTimerinitialdelay() {
+		return timerInitialDelay;
+	}
+
+	public static int getTimerupdateinterval() {
+		return timerUpdateInterval;
 	}
 }

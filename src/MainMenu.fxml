@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="900.0" prefWidth="562.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="900.0" fitWidth="562.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../resources/FsCFxIqUj9hfMY8l7PJMag5W6Q5ZraQWBJj8vPA8M905M_GGD4-_Rc-jWBMO4Zal7MUD=h900.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="playButton" fitHeight="96.0" fitWidth="200.0" layoutX="195.0" layoutY="364.0">
+         <image>
+            <Image url="@../resources/0.png" />
+         </image>
+      </ImageView>
+      <ChoiceBox fx:id="sizeChoiceBox" layoutX="220.0" layoutY="486.0" prefWidth="150.0" />
+      <Label layoutX="252.0" layoutY="383.0" mouseTransparent="true" text="PLAY" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font name="System Bold Italic" size="35.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
