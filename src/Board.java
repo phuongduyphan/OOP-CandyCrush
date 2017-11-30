@@ -100,7 +100,7 @@ public class Board {
 					if (hrow[i][j] >= 4) {
 						specialPos = ((j - hrow[i][j] + 1) + j)/2;
 						if (grid[i][specialPos] instanceof CandyNormal) {
-							grid[i][specialPos] = new Candy3x3Bomb(grid[i][j].getColor());
+							grid[i][specialPos] = new CandyHorizontalBomb(grid[i][j].getColor());
 						}
 						else specialPos = -1;
 					}
@@ -120,7 +120,7 @@ public class Board {
 					if (hcol[i][j] >= 4) {
 						specialPos = ((i - hcol[i][j] + 1) + i)/2;
 						if (grid[specialPos][j] instanceof CandyNormal) {
-							grid[specialPos][j] = new Candy3x3Bomb(grid[i][j].getColor());
+							grid[specialPos][j] = new CandyVerticalBomb(grid[i][j].getColor());
 						}
 						else specialPos = -1;
 					}
@@ -163,8 +163,9 @@ public class Board {
 		if (candy == null)
 			return;
 		grid[coor.getRow()][coor.getColumn()] = null;
-		for (Coordinate coor2 : candy.specialExplode(coor))
+		for (Coordinate coor2 : candy.specialExplode(coor)) {
 			crush(coor2);
+		}
 	}
 
 	private void debugGrid() {
