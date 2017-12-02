@@ -5,6 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
+/**
+ * The HeaderBoard class will handle events on the header board.
+ */
 public class HeaderBoard {
 	@FXML
 	private Label timeValue;

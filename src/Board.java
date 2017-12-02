@@ -2,6 +2,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+/**
+ * The Board class includes methods to handle events on the game board, 
+ * i.e searching for sequences of candies, updating positions of candies after a move, 
+ * swapping two candies...
+ */
+
 public class Board {
 	private int numberOfRow, numberOfColumn;
 	private Candy[][] grid;
@@ -47,18 +53,28 @@ public class Board {
 	}
 
 	/**
-	 * Check if there are sequences of three or more candies, and set them to 0
+	 * Check if there are sequences of three or more candies and process those sequences
 	 * 
 	 * @return a list of coordinates of candies in sequences
 	 */
 	public ArrayList<Coordinate> checkSequenceCandy() {
 		int[][] hrow = new int[numberOfRow + 5][numberOfColumn + 5],
 				hcol = new int[numberOfRow + 5][numberOfColumn + 5];
-		ArrayList<Coordinate> list = new ArrayList<Coordinate>();
+		ArrayList<Coordinate> list = new ArrayList<Coordinate>(); //stores coordinates of candies in sequences 
 		TreeSet<Coordinate> SetList = new TreeSet<Coordinate>(new CoorComp());
 		Coordinate coor;
 
-		// search for sequences and store row/column sequences in hrow/hcol
+		/**
+		 *  SEARCH FOR SEQUENCES
+		 *  
+		 *  @param hrow 
+		 *  			array dedicates the number of times a specific color appears w.r.t rows
+		 *  @param hcol 
+		 *  			array dedicates the number of times a specific color appears w.r.t columns
+		 */
+		//Traverse the board
+		//If a candy in a row/column (at position [i][j]) has the same color with the preceding one, 
+		//increment the times the preceding one appears in the sequence by 1 and set it as hrow[i][j]/hcol[i][j]
 		for (int i = 0; i < numberOfRow; i++)
 			for (int j = 0; j < numberOfColumn; j++) {
 				if (j > 0 && grid[i][j].getColor() == grid[i][j - 1].getColor())
@@ -87,24 +103,43 @@ public class Board {
 		}
 		System.out.println("/***************************/");
 
-		// add candies in sequences coordinates to TreeSet
-		int specialPos = 0;
+		/**
+		 *  PROCESS SEQUENCES
+		 *  
+		 *  @param specialPos
+		 *  			the position of candy with formed by special sequence
+		 *  @param visitRowSeq
+		 *  			array dedicates whether a cell has been processed in consequence of a row sequence
+		 *  @param visitColSeq 
+		 *  			array dedicates whether a cell has been processed in consequence of a column sequence
+		 */
+		int specialPos = 0; 
 		boolean[][] visitRowSeq = new boolean[numberOfRow + 5][numberOfColumn + 5],
 					visitColSeq = new boolean[numberOfRow + 5][numberOfColumn + 5];
 		
 		for (int i = numberOfRow - 1; i >= 0; i--)
 			for (int j = numberOfColumn - 1; j >= 0; j--) {
+				/**PROCESS ROW SEQUENCE**/
+				//if there is a row sequence & the candy at the position has not been processed
 				if (!visitRowSeq[i][j] && hrow[i][j] >= 3) {
-					specialPos = -1;
+					specialPos = -1;						
 					
 					if (hrow[i][j] >= 4) {
-						specialPos = ((j - hrow[i][j] + 1) + j)/2;
+						
+						specialPos = ((j - hrow[i][j] + 1) + j)/2; //supposed special position of the row
+						
+						//If the candy at the special position is of type Normal,
+						//turn it into a candy of type Horizontal Bomb with the same color.
+						//Otherwise, set specialPos back to -1
 						if (grid[i][specialPos] instanceof CandyNormal) {
 							grid[i][specialPos] = new CandyHorizontalBomb(grid[i][j].getColor());
 						}
 						else specialPos = -1;
 					}
 					
+					//traverse the row sequence, 
+					//mark visitRowSeq at the corresponding position true to avoid repeated process,
+					//append the coordinates (except which includes specialPos) to setList.
 					for (int p = 0; p < hrow[i][j]; p++) {
 						visitRowSeq[i][j-p] = true; 
 						if (j-p != specialPos) {
@@ -113,18 +148,28 @@ public class Board {
 						}
 					}
 				}
-
+				
+				/**PROCESS COLUMN SEQUENCE**/
+				//if there is a column sequence & the candy at the position has not been processed
 				if (!visitColSeq[i][j] && hcol[i][j] >= 3) {
 					specialPos = -1;
 			
 					if (hcol[i][j] >= 4) {
-						specialPos = ((i - hcol[i][j] + 1) + i)/2;
+						
+						specialPos = ((i - hcol[i][j] + 1) + i)/2; //supposed special position of the column
+						
+						//If the candy at the special position is of type Normal,
+						//turn it into a candy of type Vertical Bomb with the same color.
+						//Otherwise, set specialPos back to -1
 						if (grid[specialPos][j] instanceof CandyNormal) {
 							grid[specialPos][j] = new CandyVerticalBomb(grid[i][j].getColor());
 						}
 						else specialPos = -1;
 					}
 					
+					//traverse the column sequence, 
+					//mark visitColSeq at the corresponding position true to avoid repeated process,
+					//append the coordinates (except which includes specialPos) to setList.
 					for (int p = 0; p < hcol[i][j]; p++) {
 						visitColSeq[i-p][j] = true;
 						if (i-p != specialPos) {
@@ -148,7 +193,7 @@ public class Board {
 	/**
 	 * Set values at coordinates to 0 and check for special explode
 	 * 
-	 * @param coorList
+	 * @param coorList list of coordinates of candies to be exploded
 	 */
 	private void crush(ArrayList<Coordinate> coorList) {
 		for (Coordinate coor : coorList) {
@@ -158,6 +203,11 @@ public class Board {
 		Main.getGameBoard().updateBoard();
 	}
 
+	/**
+	 * Set values at coordinates to 0 and check for special explode
+	 * 
+	 * @param coor the coordinate of the candy to be exploded
+	 */
 	private void crush(Coordinate coor) {
 		Candy candy = grid[coor.getRow()][coor.getColumn()];
 		if (candy == null)
@@ -181,20 +231,28 @@ public class Board {
 	}
 
 	/**
-	 * Update positions of candies after a valid swap
+	 * Update positions of candies after a valid swap,
+	 * i.e move the candies downwards to fill vacant cells and then randomly generate new candies to fill the board
 	 */
 	public void dropNewCandy() {		
-		boolean checkTopCandy;
+		boolean checkTopCandy; //is true if there is at least one vacant cell in-between
+		
+		//For one loop, in any particular column, 
+		//either the candies will be moved downwards to fill vacant cells (checkTopCandy == true)
+		//or new candies will be randomly generated and filled in (checkTopCandy == false).
+		//The main process will be done when all cells in the board is filled.
 		while (!checkFullCandy()) {
 			for (int j = 0; j <= numberOfColumn; j++) {
-				if (j == numberOfColumn) {
+				if (j == numberOfColumn) { 
 					System.out.println("fallCandy");
 					debugGrid();
 					Main.getGameBoard().updateBoard();
 					continue;
 				}
+				
 				checkTopCandy = false;
 				for (int i=numberOfRow-1; i>=0; i--) {
+					//If the cell is vacant, replace it with the nearest candy in the column
 					if (grid[i][j] == null) {
 						for (int k = i-1; k>=0; k--) {
 							if (grid[k][j] != null) {
@@ -204,6 +262,8 @@ public class Board {
 								break;
 							}
 						}
+						
+						//if there is no candy on the cells above, randomly generate a candy for the current cell
 						if (!checkTopCandy) grid[i][j] = Candy.getRandCandy();
 						break;
 					}	
@@ -216,17 +276,20 @@ public class Board {
 	 * Create board with random candies and modify to avoid sequences if necessary
 	 */
 	public void generateBoard() {
-		/** Randomly generate board **/
+		/** RANDOMLY GENERATE BOARD **/
 		for (int i = 0; i < numberOfRow; i++) {
 			for (int j = 0; j < numberOfColumn; j++) {
 				grid[i][j] = Candy.getRandCandy();
 			}
 		}
 
-		/** Eliminate sequences **/
+		/** ELIMINATE SEQUENCES
+		 * 	Traverse the board, if a candy has the same color with its two preceding candies, 
+		 *  either in a row or in a column, change its color to a different color.
+		 */
 		for (int i = 0; i < numberOfRow; i++) {
 			for (int j = 0; j < numberOfColumn; j++) {
-				// CASE 1
+				// CASE 1: where column sequences can be randomly formed
 				if ((i >= 2) && (j < 2)) {
 					if ((grid[i - 1][j].getColor() == grid[i - 2][j].getColor())) {
 						while (grid[i][j].getColor() == grid[i - 1][j].getColor())
@@ -234,7 +297,7 @@ public class Board {
 					}
 				}
 
-				// CASE 2
+				// CASE 2: where row sequences can be randomly formed
 				if ((i < 2) && (j >= 2)) {
 					if ((grid[i][j - 1].getColor() == grid[i][j - 2].getColor())) {
 						while (grid[i][j].getColor() == grid[i][j - 1].getColor())
@@ -242,7 +305,7 @@ public class Board {
 					}
 				}
 
-				// CASE 3
+				// CASE 3: where row or column sequences can be randomly formed
 				if ((i >= 2) && (j >= 2)) {
 					if ((grid[i - 1][j].getColor() == grid[i - 2][j].getColor())
 							&& (grid[i][j - 1].getColor() == grid[i][j - 2].getColor())) {

@@ -20,6 +20,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.util.Duration;
 
+/**
+ * The GameBoard class will handle events of the game board.
+ */
 public class GameBoard {
 	/** Editable properties */
 	private static final int flipTransitionDuration = 120;

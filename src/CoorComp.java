@@ -1,5 +1,10 @@
 import java.util.Comparator;
 
+/**
+ * The CoorComp class implements a comparator to compare two given coordinates
+ * @see Coordinate
+ */
+
 public class CoorComp implements Comparator<Coordinate> {
 	public int compare(Coordinate p1, Coordinate p2) {
 		if (p1.getRow() < p2.getRow())

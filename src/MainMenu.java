@@ -6,6 +6,9 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
+/**
+ * The MainMenu class will handle events in the menu.
+ */
 public class MainMenu {
 
 	@FXML

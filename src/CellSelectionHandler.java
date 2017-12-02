@@ -1,5 +1,9 @@
 import java.util.ArrayList;
 
+/**
+ * The CellSelectionHandler class includes methods to manipulate selection actions from user
+ */
+
 public class CellSelectionHandler {
 	private Coordinate selected;
 
@@ -21,7 +25,7 @@ public class CellSelectionHandler {
 	 * return the two coordinates and reset. If the given cell is not adjacent or is
 	 * the same with the previous selected cell, reset.
 	 * 
-	 * @param coordinate which has been clicked
+	 * @param coordinate coordinate which has been clicked
 	 * 
 	 * @return A null object if this is the first cell.<br>ArrayList<Coordinate> object contains two Coordinate objects if two adjacent cells are selected.<br>A null object if the given cell is not adjacent or is the same with the previous selected cell.
 	 */

@@ -2,6 +2,11 @@ import java.util.ArrayList;
 
 import javafx.scene.image.Image;
 
+/**
+ * The Candy class represents a specific candy of type Horizontal Bomb.
+ * This includes methods to handle behaviours of the candy.
+ */
+
 public class CandyHorizontalBomb extends Candy {
 	private static final String[] imageDirectory = new String[] { "red-horizontalbomb.png", "orange-horizontalbomb.png",
 			"yellow-horizontalbomb.png", "green-horizontalbomb.png", "blue-horizontalbomb.png", "purple-horizontalbomb.png"};

@@ -4,6 +4,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * The Main class will control the entire application
+ */
+
 public class Main extends Application {
 	/** Windows Properties */
 	private static final String screenTitle = "Candy Crush";

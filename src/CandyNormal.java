@@ -2,6 +2,11 @@ import java.util.ArrayList;
 
 import javafx.scene.image.Image;
 
+/**
+ * The Candy class represents a specific candy of type Normal.
+ * This includes methods to handle behaviours of the candy.
+ */
+
 public class CandyNormal extends Candy {
 	private static final String[] imageDirectory = new String[] { "red.png", "orange.png",
 			"yellow.png", "green.png", "blue.png", "purple.png"};

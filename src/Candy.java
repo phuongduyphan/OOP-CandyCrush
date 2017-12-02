@@ -8,6 +8,11 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * The Candy class represents a specific candy.
+ * This includes methods to handle behaviours of the candy.
+ */
+
 public abstract class Candy {
 	private static int numberOfCandyColor = Main.getNumberofcandycolor();
 	private static Integer maxProba;
@@ -25,9 +30,10 @@ public abstract class Candy {
 
 	/**
 	 * Add new candy type and control their probabilities here Probability of
-	 * occurrence of a type of candy is calculate by the formula P(c) = V(c) / sumP
-	 * P(c): Probability of occurrence of candy type c V(c): Probability value
-	 * defined for candy type c sumP: Summation of all probability value in the list
+	 * occurrence of a type of candy is calculate by the formula P(c) = V(c) / sumP <br>
+	 * P(c): Probability of occurrence of candy type c <br>
+	 * V(c): Probability value defined for candy type c <br>
+	 * sumP: Summation of all probability value in the list
 	 */
 	public static void init() {
 		maxProba = 0;
@@ -86,12 +92,11 @@ public abstract class Candy {
 	}
 
 	/**
-	 * Check if the candy at given coordinate is to be exploded under the effect of
-	 * this current type of candy
+	 * Check if the candy at given coordinate is to be exploded under the effect of its current type
 	 * 
-	 * @param coor
+	 * @param curCoor 
 	 *            The coordinate of the candy want to check
-	 * @return If the candy at the given coordinate is to be exploded
+	 * @return the list of coordinates of candies that are exploded under the effect of the given candy
 	 */
 	public abstract ArrayList<Coordinate> specialExplode(Coordinate curCoor);
 

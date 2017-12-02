@@ -2,6 +2,11 @@ import java.util.ArrayList;
 
 import javafx.scene.image.Image;
 
+/**
+ * The Candy class represents a specific candy of type 3x3Bomb.
+ * This includes methods to handle behaviours of the candy.
+ */
+
 public class Candy3x3Bomb extends Candy {
 	private static final String[] imageDirectory = new String[] { "red-3x3bomb.png", "orange-3x3bomb.png",
 			"yellow-3x3bomb.png", "green-3x3bomb.png", "blue-3x3bomb.png", "purple-3x3bomb.png"};
